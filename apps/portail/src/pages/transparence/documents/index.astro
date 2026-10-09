@@ -1,7 +1,95 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import SectionPlaceholder from '../../../components/SectionPlaceholder.astro';
+import { getPortalDocumentTypes, getPortalDocuments, getPortalZones } from '../../../lib/content';
+
+const [documents, documentTypes, zones] = await Promise.all([
+  getPortalDocuments(),
+  getPortalDocumentTypes(),
+  getPortalZones(),
+]);
+const typeNames = new Map(documentTypes.map((term) => [term.id, term.name]));
+const zoneNames = new Map(zones.map((zone) => [zone.id, zone.name]));
+const populatedTypes = documentTypes.filter((term) => term.count > 0);
+const populatedZones = zones.filter((zone) => zone.count > 0);
+
+function formatDate(value: string): string {
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+  if (!year || !month || !day) return 'Date non renseignée';
+  return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(year, month - 1, day));
+}
 ---
-<Base title="Documents publics">
-  <SectionPlaceholder eyebrow="TRANSPARENCE" title="Documents publics" description="Les actes, rapports et documents officiels seront référencés ici après validation éditoriale." />
+<Base title="Documents publics" description="Consultez les documents officiels publiés par la commune de Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">TRANSPARENCE</p>
+      <h1>Documents publics</h1>
+      <p>Retrouvez les actes, rapports, plans et documents officiels rendus communicables par la commune.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">BIBLIOTHÈQUE OFFICIELLE</p><h2>Documents publiés</h2></div>
+        <span class="text-link">{documents.length} documents publiés</span>
+      </div>
+      <div class="filter-form document-filters">
+        <div><label for="document-type-filter">Filtrer par type de document</label><select id="document-type-filter" name="type"><option value="">Tous les types</option>{populatedTypes.map((term) => <option value={term.id}>{term.name}</option>)}</select></div>
+        <div><label for="document-zone-filter">Filtrer par village ou zone</label><select id="document-zone-filter" name="zone"><option value="">Tous les villages et zones</option>{populatedZones.map((zone) => <option value={zone.id}>{zone.name}</option>)}</select></div>
+      </div>
+      {documents.length > 0 ? (
+        <>
+          <div class="document-grid" id="document-results">
+            {documents.map((document, index) => {
+              const documentTypeIds = document.ck_type_document ?? [];
+              const documentZoneIds = document.ck_zone ?? [];
+              const labels = documentTypeIds.map((id) => typeNames.get(id)).filter(Boolean).join(' · ');
+              const locations = documentZoneIds.map((id) => zoneNames.get(id)).filter(Boolean).join(' · ');
+              return (
+                <article class="document-card" data-types={documentTypeIds.join(',')} data-zones={documentZoneIds.join(',')}>
+                  <span class="document-number">{String(index + 1).padStart(2, '0')}</span>
+                  <p class="card-label">{labels || 'Document officiel'}</p>
+                  <h3 set:html={document.title.rendered}></h3>
+                  <p class="document-meta">{formatDate(document.date)}{locations ? ` · ${locations}` : ''}</p>
+                  <div class="cms-content" set:html={document.excerpt.rendered || document.content.rendered}></div>
+                  <a class="text-link" href={document.link} target="_blank" rel="noreferrer">Consulter le document <span aria-hidden="true">↗</span></a>
+                </article>
+              );
+            })}
+          </div>
+          <div class="empty-state" id="document-filter-empty" hidden>
+            <h2>Aucun document ne correspond à ces filtres.</h2>
+            <p>Modifiez le type de document ou le village sélectionné.</p>
+          </div>
+        </>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-state-number">En attente de publication</span>
+          <h2>Aucun document public n’est encore publié.</h2>
+          <p>Les actes et ressources validés par la commune apparaîtront ici après leur mise en ligne.</p>
+        </div>
+      )}
+    </div>
+  </section>
 </Base>
+
+<script>
+  const typeFilter = document.querySelector('#document-type-filter') as HTMLSelectElement | null;
+  const zoneFilter = document.querySelector('#document-zone-filter') as HTMLSelectElement | null;
+  const cards = [...document.querySelectorAll('.document-card')];
+  const empty = document.querySelector('#document-filter-empty');
+  const applyFilters = () => {
+    const type = typeFilter?.value ?? '';
+    const zone = zoneFilter?.value ?? '';
+    let visible = 0;
+    cards.forEach((card) => {
+      const types = card.getAttribute('data-types')?.split(',') ?? [];
+      const zones = card.getAttribute('data-zones')?.split(',') ?? [];
+      const matches = (!type || types.includes(type)) && (!zone || zones.includes(zone));
+      card.toggleAttribute('hidden', !matches);
+      if (matches) visible += 1;
+    });
+    empty?.toggleAttribute('hidden', visible > 0);
+  };
+  typeFilter?.addEventListener('change', applyFilters);
+  zoneFilter?.addEventListener('change', applyFilters);
+</script>
