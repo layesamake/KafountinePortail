@@ -44,6 +44,15 @@ test('la page des services expose aussi le catalogue des démarches', async ({ p
   await expect(page.getByLabel(/Filtrer par famille de démarche/i)).toBeVisible();
 });
 
+test('la page participation expose l’agenda et les alertes du CMS', async ({ page }) => {
+  await page.goto('/participer/');
+
+  await expect(page.getByRole('heading', { name: 'Agenda communal', exact: true })).toBeVisible();
+  await expect(page.getByText(/0 événements publiés/i)).toBeVisible();
+  await expect(page.getByText(/0 alertes actives/i)).toBeVisible();
+  await expect(page.getByLabel(/Filtrer les événements par village ou zone/i)).toBeVisible();
+});
+
 test('la page des villages liste les zones du CMS', async ({ page }) => {
   await page.goto('/villages/');
 

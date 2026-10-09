@@ -1,7 +1,94 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SectionPlaceholder from '../../components/SectionPlaceholder.astro';
+import { getPortalAlerts, getPortalEvents, getPortalZones } from '../../lib/content';
+
+const [events, alerts, zones] = await Promise.all([
+  getPortalEvents(),
+  getPortalAlerts(),
+  getPortalZones(),
+]);
+
+const formatDate = (value: string) => new Intl.DateTimeFormat('fr-FR', {
+  dateStyle: 'long',
+}).format(new Date(value));
 ---
-<Base title="Participer">
-  <SectionPlaceholder eyebrow="PARTICIPATION CITOYENNE" title="Participer à la vie communale" description="Consultations, propositions, signalements et échanges avec la commune seront réunis dans cet espace." />
+<Base title="Participer" description="Agenda communal, alertes et participation citoyenne à Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">PARTICIPATION CITOYENNE</p>
+      <h1>Agenda et informations citoyennes</h1>
+      <p>Retrouvez les rendez-vous publics, les alertes et les informations publiées par la commune.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">RENDEZ-VOUS PUBLICS</p><h2>Agenda communal</h2></div>
+        <span class="text-link">{events.length} événements publiés</span>
+      </div>
+      <div class="filter-bar" aria-label="Filtres des événements">
+        <label for="event-zone-filter">Filtrer les événements par village ou zone</label>
+        <select id="event-zone-filter">
+          <option value="">Tous les villages et zones</option>
+          {zones.map((zone) => <option value={zone.id}>{zone.name}</option>)}
+        </select>
+      </div>
+      {events.length > 0 ? (
+        <div class="document-grid" id="event-list">
+          {events.map((event, index) => (
+            <a class="document-card" data-zones={(event.ck_zone ?? []).join(',')} href={`/agenda/${event.slug}/`}>
+              <span class="document-number">{String(index + 1).padStart(2, '0')}</span>
+              <p class="card-label">{formatDate(event.date)}</p>
+              <h3 set:html={event.title.rendered}></h3>
+              <div class="cms-content" set:html={event.excerpt.rendered || event.content.rendered}></div>
+              <span class="text-link">Voir l’événement →</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-state-number">En cours de publication</span>
+          <h3>Aucun événement communal n’est encore publié.</h3>
+          <p>Les rendez-vous publics seront ajoutés après validation par la commune.</p>
+        </div>
+      )}
+    </div>
+  </section>
+  <section class="section section-muted">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">INFORMATION OFFICIELLE</p><h2>Alertes communales</h2></div>
+        <span class="text-link">{alerts.length} alertes actives</span>
+      </div>
+      {alerts.length > 0 ? (
+        <div class="document-grid">
+          {alerts.map((alert, index) => (
+            <article class="document-card alert-card">
+              <span class="document-number">{String(index + 1).padStart(2, '0')}</span>
+              <p class="card-label">{formatDate(alert.date)}</p>
+              <h3 set:html={alert.title.rendered}></h3>
+              <div class="cms-content" set:html={alert.content.rendered}></div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-state-number">Aucune alerte active</span>
+          <h3>Il n’y a pas d’alerte communale publiée actuellement.</h3>
+          <p>Cette rubrique sera mise à jour par la commune en cas d’information urgente.</p>
+        </div>
+      )}
+    </div>
+  </section>
 </Base>
+<script>
+  const zoneFilter = document.querySelector('#event-zone-filter') as HTMLSelectElement | null;
+  const cards = [...document.querySelectorAll<HTMLElement>('#event-list [data-zones]')];
+  zoneFilter?.addEventListener('change', () => {
+    const selected = zoneFilter.value;
+    cards.forEach((card) => {
+      const zones = card.dataset.zones?.split(',').filter(Boolean) ?? [];
+      card.hidden = Boolean(selected) && !zones.includes(selected);
+    });
+  });
+</script>
