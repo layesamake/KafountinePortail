@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPortalProjects } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getPortalProjects();
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+---
+<Base title={project.title.rendered} description={project.excerpt.rendered.replace(/<[^>]*>/g, '').trim()}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">PROJET MUNICIPAL</p>
+      <h1 set:html={project.title.rendered}></h1>
+      <div class="cms-content" set:html={project.excerpt.rendered || project.content.rendered}></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={project.content.rendered}></article>
+      <a class="button button-secondary" href="/projets/">← Retour aux projets</a>
+    </div>
+  </section>
+</Base>

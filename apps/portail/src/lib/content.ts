@@ -32,6 +32,15 @@ export interface PortalCommission {
   excerpt: { rendered: string; protected: boolean };
 }
 
+export interface PortalProject {
+  id: number;
+  slug: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+  ck_zone?: number[];
+}
+
 export interface PortalZone {
   id: number;
   count: number;
@@ -130,6 +139,11 @@ export async function getPortalCommissions(): Promise<PortalCommission[]> {
   return Array.isArray(commissions) ? commissions : [];
 }
 
+export async function getPortalProjects(): Promise<PortalProject[]> {
+  const projects = await fetchCmsJson<PortalProject[]>('/wp-json/wp/v2/ck_projet?per_page=100&orderby=date&order=desc');
+  return Array.isArray(projects) ? projects : [];
+}
+
 export async function getPortalZones(): Promise<PortalZone[]> {
   const zones = await fetchCmsJson<PortalZone[]>('/wp-json/wp/v2/ck_zone?per_page=100&orderby=name&order=asc');
   return Array.isArray(zones) ? zones : [];
@@ -151,11 +165,12 @@ function searchText(value: { rendered: string }): string {
 }
 
 export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
-  const [services, members, commissions, zones] = await Promise.all([
+  const [services, members, commissions, zones, projects] = await Promise.all([
     getPortalServices(),
     getPortalCouncilMembers(),
     getPortalCommissions(),
     getPortalZones(),
+    getPortalProjects(),
   ]);
 
   return [
@@ -182,6 +197,12 @@ export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
       excerpt: `${zone.count} contenus territoriaux associés`,
       type: 'Village ou zone',
       href: '/villages/',
+    })),
+    ...projects.map((project) => ({
+      title: searchText(project.title),
+      excerpt: searchText(project.excerpt) || searchText(project.content),
+      type: 'Projet municipal',
+      href: `/projets/${project.slug}/`,
     })),
   ].filter((entry) => entry.title.length > 0);
 }

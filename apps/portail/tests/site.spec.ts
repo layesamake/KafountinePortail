@@ -44,6 +44,14 @@ test('la page des villages liste les zones du CMS', async ({ page }) => {
   await expect(page.getByText('Niomoune', { exact: true })).toBeVisible();
 });
 
+test('la page des projets est reliée au CMS et prépare le filtre par zone', async ({ page }) => {
+  await page.goto('/projets/');
+
+  await expect(page.getByRole('heading', { name: /Les projets de la commune/i })).toBeVisible();
+  await expect(page.getByText(/0 projets publiés/i)).toBeVisible();
+  await expect(page.getByLabel(/Filtrer par village ou zone/i)).toBeVisible();
+});
+
 test('la recherche globale filtre les contenus publiés', async ({ page }) => {
   await page.goto('/recherche/');
 

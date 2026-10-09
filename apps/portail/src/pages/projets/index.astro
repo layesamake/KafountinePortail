@@ -1,7 +1,66 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SectionPlaceholder from '../../components/SectionPlaceholder.astro';
+import { getPortalProjects, getPortalZones } from '../../lib/content';
+
+const [projects, zones] = await Promise.all([
+  getPortalProjects(),
+  getPortalZones(),
+]);
+const populatedZones = zones.filter((zone) => zone.count > 0);
 ---
-<Base title="Projets de la commune">
-  <SectionPlaceholder eyebrow="PROJETS" title="Les projets de la commune" description="Suivez les projets municipaux, leurs étapes et les informations publiées." />
+<Base title="Projets de la commune" description="Suivez les projets municipaux de la commune de Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">PROJETS MUNICIPAUX</p>
+      <h1>Les projets de la commune</h1>
+      <p>Suivez les projets municipaux, leurs étapes et les informations publiées par la commune.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">TRANSPARENCE LOCALE</p><h2>Projets publiés</h2></div>
+        <span class="text-link">{projects.length} projets publiés</span>
+      </div>
+      <form class="filter-form" id="project-filter-form">
+        <label for="project-zone-filter">Filtrer par village ou zone</label>
+        <select id="project-zone-filter" name="zone">
+          <option value="">Tous les villages et zones</option>
+          {populatedZones.map((zone) => <option value={zone.id}>{zone.name}</option>)}
+        </select>
+      </form>
+      {projects.length > 0 ? (
+        <div class="project-grid" id="project-results">
+          {projects.map((project, index) => (
+            <article class="project-card" data-zones={project.ck_zone.join(',')}>
+              <span class="project-number">{String(index + 1).padStart(2, '0')}</span>
+              <h3 set:html={project.title.rendered}></h3>
+              <div class="cms-content" set:html={project.excerpt.rendered || project.content.rendered}></div>
+              <a class="text-link" href={`/projets/${project.slug}/`}>Voir le projet <span aria-hidden="true">↗</span></a>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state" id="project-empty-state">
+          <span class="empty-state-number">En attente de publication</span>
+          <h2>Aucun projet municipal n’est encore publié.</h2>
+          <p>Les projets validés par la mairie apparaîtront ici et pourront être filtrés par village ou zone.</p>
+        </div>
+      )}
+    </div>
+  </section>
 </Base>
+
+<script>
+  const form = document.querySelector('#project-filter-form');
+  const filter = document.querySelector('#project-zone-filter') as HTMLSelectElement | null;
+  const cards = [...document.querySelectorAll('.project-card')];
+  form?.addEventListener('submit', (event) => event.preventDefault());
+  filter?.addEventListener('change', () => {
+    const zone = filter.value;
+    cards.forEach((card) => {
+      const zones = card.getAttribute('data-zones')?.split(',') ?? [];
+      card.toggleAttribute('hidden', Boolean(zone) && !zones.includes(zone));
+    });
+  });
+</script>

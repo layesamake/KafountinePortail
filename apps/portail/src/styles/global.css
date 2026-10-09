@@ -137,6 +137,16 @@ dd { margin: 0; color: var(--navy); font-weight: 800; text-align: right; }
 .search-result-card h2 { margin: 0 0 8px; font-size: 1.55rem; }
 .search-result-card p { margin: 0; color: var(--muted); }
 
+.filter-form { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.filter-form label { color: var(--navy); font-weight: 800; }
+.filter-form select { min-width: 240px; border: 1px solid #a9c4d3; border-radius: 6px; padding: 10px 12px; color: var(--ink); background: #fff; }
+.project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.project-card { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 24px; }
+.project-number { color: var(--gold); font-size: .75rem; font-weight: 900; letter-spacing: .1em; }
+.project-card h3 { margin: 20px 0 8px; font-size: 1.25rem; }
+.project-card .cms-content { font-size: .9rem; }
+.project-card .text-link { display: inline-block; margin-top: 8px; }
+[hidden] { display: none !important; }
 .site-footer { background: var(--navy-dark); color: #dbe8f0; padding: 62px 0 22px; }
 .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 60px; }
 .site-footer h2, .site-footer h3 { color: #fff; }
@@ -168,6 +178,9 @@ dd { margin: 0; color: var(--navy); font-weight: 800; text-align: right; }
   .section-heading .text-link { display: inline-block; margin-top: 15px; }
   .action-grid { grid-template-columns: 1fr; }
   .member-grid, .commission-grid { grid-template-columns: 1fr; }
+  .project-grid { grid-template-columns: 1fr; }
+  .filter-form { display: grid; }
+  .filter-form select { min-width: 0; width: 100%; }
   .service-grid { grid-template-columns: 1fr; }
   .zone-grid { grid-template-columns: 1fr; }
   .content-card { padding: 24px; }
