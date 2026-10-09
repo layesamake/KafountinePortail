@@ -32,6 +32,15 @@ export interface PortalCommission {
   excerpt: { rendered: string; protected: boolean };
 }
 
+export interface PortalSession {
+  id: number;
+  date: string;
+  slug: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+}
+
 export interface PortalProject {
   id: number;
   slug: string;
@@ -189,6 +198,11 @@ export async function getPortalCommissions(): Promise<PortalCommission[]> {
   return Array.isArray(commissions) ? commissions : [];
 }
 
+export async function getPortalSessions(): Promise<PortalSession[]> {
+  const sessions = await fetchCmsJson<PortalSession[]>('/wp-json/wp/v2/ck_session?per_page=100&orderby=date&order=desc');
+  return Array.isArray(sessions) ? sessions : [];
+}
+
 export async function getPortalProjects(): Promise<PortalProject[]> {
   const projects = await fetchCmsJson<PortalProject[]>('/wp-json/wp/v2/ck_projet?per_page=100&orderby=date&order=desc');
   return Array.isArray(projects) ? projects : [];
@@ -245,10 +259,11 @@ function searchText(value: { rendered: string }): string {
 }
 
 export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
-  const [services, members, commissions, zones, projects, demarches, events, alerts, documents] = await Promise.all([
+  const [services, members, commissions, sessions, zones, projects, demarches, events, alerts, documents] = await Promise.all([
     getPortalServices(),
     getPortalCouncilMembers(),
     getPortalCommissions(),
+    getPortalSessions(),
     getPortalZones(),
     getPortalProjects(),
     getPortalDemarches(),
@@ -275,6 +290,12 @@ export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
       excerpt: searchText(commission.excerpt) || searchText(commission.content),
       type: 'Commission municipale',
       href: '/conseil/',
+    })),
+    ...sessions.map((session) => ({
+      title: searchText(session.title),
+      excerpt: searchText(session.excerpt) || searchText(session.content),
+      type: 'Session du conseil municipal',
+      href: `/conseil/sessions/${session.slug}/`,
     })),
     ...zones.map((zone) => ({
       title: zone.name,

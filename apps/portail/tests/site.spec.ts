@@ -46,6 +46,13 @@ test('la page du conseil affiche les élus et commissions du CMS', async ({ page
   await expect(page.getByText('Sécurité', { exact: true })).toBeVisible();
 });
 
+test('le conseil affiche aussi les sessions publiées du CMS', async ({ page }) => {
+  await page.goto('/conseil/');
+
+  await expect(page.getByRole('heading', { name: 'Sessions du conseil municipal', exact: true })).toBeVisible();
+  await expect(page.getByText(/0 sessions publiées/i)).toBeVisible();
+});
+
 test('la page des services affiche les fiches du CMS', async ({ page }) => {
   await page.goto('/services/');
 

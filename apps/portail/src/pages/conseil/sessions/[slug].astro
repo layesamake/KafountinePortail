@@ -1,0 +1,31 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPortalSessions } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const sessions = await getPortalSessions();
+  return sessions.map((session) => ({
+    params: { slug: session.slug },
+    props: { session },
+  }));
+}
+
+const { session } = Astro.props;
+const [year, month, day] = session.date.slice(0, 10).split('-').map(Number);
+const date = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(year, month - 1, day));
+---
+<Base title={session.title.rendered} description={`Session du Conseil municipal : ${session.title.rendered}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">SESSION DU CONSEIL MUNICIPAL</p>
+      <h1 set:html={session.title.rendered}></h1>
+      <p>{date}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={session.content.rendered}></article>
+      <a class="button button-secondary" href="/conseil/">← Retour au conseil municipal</a>
+    </div>
+  </section>
+</Base>

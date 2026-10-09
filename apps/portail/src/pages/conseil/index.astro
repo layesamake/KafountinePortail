@@ -1,13 +1,19 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getPortalCouncilMembers, getPortalCommissions } from '../../lib/content';
+import { getPortalCommissions, getPortalCouncilMembers, getPortalSessions } from '../../lib/content';
 
-const [members, commissions] = await Promise.all([
+const [members, commissions, sessions] = await Promise.all([
   getPortalCouncilMembers(),
   getPortalCommissions(),
+  getPortalSessions(),
 ]);
+
+const formatDate = (value: string) => {
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+  return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(year, month - 1, day));
+};
 ---
-<Base title="Conseil municipal" description="Les élus et commissions du Conseil municipal de Kafountine.">
+<Base title="Conseil municipal" description="Les élus, commissions et sessions du Conseil municipal de Kafountine.">
   <section class="page-hero">
     <div class="container narrow">
       <p class="eyebrow">CONSEIL MUNICIPAL</p>
@@ -60,6 +66,34 @@ const [members, commissions] = await Promise.all([
         </>
       ) : (
         <div class="empty-state"><h2>Les commissions municipales seront bientôt disponibles.</h2></div>
+      )}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="sessions-title">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">RÉUNIONS PUBLIQUES</p><h2 id="sessions-title">Sessions du conseil municipal</h2></div>
+        <span class="text-link">{sessions.length} sessions publiées</span>
+      </div>
+      {sessions.length > 0 ? (
+        <div class="document-grid">
+          {sessions.map((session, index) => (
+            <a class="document-card" href={`/conseil/sessions/${session.slug}/`}>
+              <span class="document-number">{String(index + 1).padStart(2, '0')}</span>
+              <p class="card-label">{formatDate(session.date)}</p>
+              <h3 set:html={session.title.rendered}></h3>
+              <div class="cms-content" set:html={session.excerpt.rendered || session.content.rendered}></div>
+              <span class="text-link">Voir la session →</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-state-number">En cours de publication</span>
+          <h3>Aucune session du conseil municipal n’est encore publiée.</h3>
+          <p>Les comptes rendus et dates de session seront ajoutés après validation par la commune.</p>
+        </div>
       )}
     </div>
   </section>
