@@ -1,0 +1,37 @@
+---
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const links = [
+  { href: '/', label: 'Accueil' },
+  { href: '/mairie/', label: 'La mairie' },
+  { href: '/conseil/', label: 'Conseil municipal' },
+  { href: '/services/', label: 'Services et démarches' },
+  { href: '/projets/', label: 'Projets' },
+  { href: '/transparence/', label: 'Transparence' },
+];
+
+const isCurrent = (href: string) => href === '/' ? currentPath === href : currentPath.startsWith(href);
+---
+<header class="site-header">
+  <div class="utility-bar">
+    <div class="container utility-inner">
+      <span>Portail officiel de la commune</span>
+      <a href="/contact/">Contact et horaires <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="Commune de Kafountine, accueil">
+      <img class="brand-logo" src="/images/logo-commune-kafountine.png" alt="Commune de Kafountine — portail citoyen officiel" width="1672" height="941" />
+    </a>
+    <nav aria-label="Navigation principale">
+      {links.map((link) => (
+        <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}</a>
+      ))}
+      <a class="nav-action" href="/participer/">Participer</a>
+    </nav>
+    <button class="menu-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false">Menu</button>
+  </div>
+</header>

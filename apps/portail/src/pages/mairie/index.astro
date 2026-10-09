@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPortalSettings } from '../../lib/content';
+
+const settings = getPortalSettings();
+---
+<Base title="La mairie" description={`Informations pratiques et institutionnelles de ${settings.denomination}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">LA MAIRIE</p>
+      <h1>La mairie de Kafountine</h1>
+      <p>Retrouvez l’organisation de la commune, les coordonnées d’accueil et les informations institutionnelles validées.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container content-grid">
+      <article class="content-card">
+        <p class="eyebrow">IDENTITÉ DE LA COMMUNE</p>
+        <h2>Une commune au service de ses habitants</h2>
+        <p>{settings.presentation}</p>
+        <dl class="facts-list">
+          <div><dt>Région</dt><dd>{settings.region}</dd></div>
+          <div><dt>Département</dt><dd>{settings.departement}</dd></div>
+          <div><dt>Arrondissement</dt><dd>{settings.arrondissement}</dd></div>
+        </dl>
+      </article>
+      <article class="content-card" id="coordonnees">
+        <p class="eyebrow">INFORMATIONS PRATIQUES</p>
+        <h2>Coordonnées et horaires</h2>
+        <p>{settings.address}</p>
+        <p><strong>{settings.telephone}</strong><br />{settings.email}</p>
+        <h3>Horaires d’accueil</h3>
+        <dl class="hours-list">
+          {settings.hours.map((entry) => <div><dt>{entry.day}</dt><dd>{entry.value}</dd></div>)}
+        </dl>
+      </article>
+    </div>
+  </section>
+</Base>

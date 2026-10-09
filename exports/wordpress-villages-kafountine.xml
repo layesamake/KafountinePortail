@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+  xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:wp="http://wordpress.org/export/1.2/">
+  <channel>
+    <title>Villages et zones — Commune de Kafountine</title>
+    <link>https://communekafountine.com/</link>
+    <description>Termes initiaux de la taxonomie ck_zone.</description>
+    <pubDate>Sun, 04 Oct 2026 00:00:00 +0000</pubDate>
+    <language>fr-FR</language>
+    <wp:wxr_version>1.2</wp:wxr_version>
+    <wp:base_site_url>https://communekafountine.com</wp:base_site_url>
+    <wp:base_blog_url>https://communekafountine.com</wp:base_blog_url>
+    <wp:term><wp:term_id>1001</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>abene</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Abéné]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1002</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>albadar</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Albadar]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1003</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>diannah</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Diannah]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1004</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>kafountine</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Kafountine]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1005</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>kolomba</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Kolomba]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1006</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>couba</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Couba]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1007</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>coubaloulou</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Coumbaloulou]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1008</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>hillol</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Hillol]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1009</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>boune</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Boune]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1010</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>boko</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Boko]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1011</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>saloulou</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Saloulou]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1012</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>bakassouk</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Bakassouk]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1013</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>diogue-dioogue</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Diogué/Dioogué]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1014</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>kassel</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Kassel]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1015</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>mantate</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Mantate]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1016</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>kailo</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Kaïlo]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1017</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>haere</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Haer / Haère]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1018</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>hitou</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Hitou]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+    <wp:term><wp:term_id>1019</wp:term_id><wp:term_taxonomy>ck_zone</wp:term_taxonomy><wp:term_slug>niomoune</wp:term_slug><wp:term_parent></wp:term_parent><wp:term_name><![CDATA[Niomoune]]></wp:term_name><wp:term_description><![CDATA[]]></wp:term_description></wp:term>
+  </channel>
+</rss>

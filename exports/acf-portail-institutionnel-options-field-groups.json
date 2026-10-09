@@ -1,0 +1,71 @@
+[
+  {
+    "key": "group_ck_options_identite",
+    "title": "Options — Identité de la commune",
+    "fields": [
+      {"key":"field_ck_identite_denomination","label":"Dénomination officielle","name":"denomination","type":"text","required":1},
+      {"key":"field_ck_identite_logo","label":"Logo officiel","name":"logo","type":"image","return_format":"id","preview_size":"medium","library":"all"},
+      {"key":"field_ck_identite_presentation","label":"Présentation courte","name":"presentation","type":"textarea","required":1,"rows":4},
+      {"key":"field_ck_identite_region","label":"Région","name":"region","type":"text"},
+      {"key":"field_ck_identite_departement","label":"Département","name":"departement","type":"text"},
+      {"key":"field_ck_identite_arrondissement","label":"Arrondissement","name":"arrondissement","type":"text"},
+      {"key":"field_ck_identite_mentions","label":"Mentions institutionnelles","name":"mentions","type":"textarea","rows":4},
+      {"key":"field_ck_identite_reseaux","label":"Réseaux et canaux officiels","name":"reseaux","type":"repeater","layout":"table","button_label":"Ajouter un canal","sub_fields":[
+        {"key":"field_ck_identite_reseaux_nom","label":"Nom du canal","name":"nom","type":"text","required":1},
+        {"key":"field_ck_identite_reseaux_url","label":"Adresse du profil","name":"url","type":"url","required":1}
+      ]}
+    ],
+    "location":[[{"param":"options_page","operator":"==","value":"ck-identite-commune"}]],
+    "menu_order":0,"position":"normal","style":"default","label_placement":"top","instruction_placement":"label","active":true,"description":"Informations institutionnelles globales de la commune."
+  },
+  {
+    "key": "group_ck_options_coordonnees",
+    "title": "Options — Coordonnées et horaires",
+    "fields": [
+      {"key":"field_ck_coordonnees_adresse","label":"Adresse de la mairie","name":"adresse","type":"textarea","required":1,"rows":3},
+      {"key":"field_ck_coordonnees_telephone","label":"Téléphone principal","name":"telephone","type":"text"},
+      {"key":"field_ck_coordonnees_email","label":"Adresse e-mail","name":"email","type":"email"},
+      {"key":"field_ck_coordonnees_plan","label":"Plan d’accès","name":"plan_url","type":"url"},
+      {"key":"field_ck_coordonnees_horaires","label":"Horaires habituels","name":"horaires","type":"repeater","layout":"table","button_label":"Ajouter un créneau","sub_fields":[
+        {"key":"field_ck_coordonnees_horaires_jour","label":"Jour","name":"jour","type":"select","choices":{"lundi":"Lundi","mardi":"Mardi","mercredi":"Mercredi","jeudi":"Jeudi","vendredi":"Vendredi","samedi":"Samedi","dimanche":"Dimanche"},"required":1},
+        {"key":"field_ck_coordonnees_horaires_ouverture","label":"Ouverture","name":"ouverture","type":"time_picker","display_format":"H:i","return_format":"H:i","required":1},
+        {"key":"field_ck_coordonnees_horaires_fermeture","label":"Fermeture","name":"fermeture","type":"time_picker","display_format":"H:i","return_format":"H:i","required":1}
+      ]},
+      {"key":"field_ck_coordonnees_fermetures","label":"Fermetures exceptionnelles","name":"fermetures","type":"repeater","layout":"table","button_label":"Ajouter une fermeture","sub_fields":[
+        {"key":"field_ck_coordonnees_fermetures_debut","label":"Premier jour","name":"debut","type":"date_picker","display_format":"d/m/Y","return_format":"Y-m-d","required":1},
+        {"key":"field_ck_coordonnees_fermetures_fin","label":"Dernier jour","name":"fin","type":"date_picker","display_format":"d/m/Y","return_format":"Y-m-d","required":1},
+        {"key":"field_ck_coordonnees_fermetures_motif","label":"Motif public","name":"motif","type":"text","required":1}
+      ]},
+      {"key":"field_ck_coordonnees_contacts","label":"Contacts utiles","name":"contacts_utiles","type":"repeater","layout":"table","button_label":"Ajouter un contact","sub_fields":[
+        {"key":"field_ck_coordonnees_contacts_nom","label":"Service ou organisme","name":"nom","type":"text","required":1},
+        {"key":"field_ck_coordonnees_contacts_telephone","label":"Téléphone","name":"telephone","type":"text"},
+        {"key":"field_ck_coordonnees_contacts_precision","label":"Précision","name":"precision","type":"text"}
+      ]},
+      {"key":"field_ck_coordonnees_modalites","label":"Modalités d’accueil","name":"modalites_accueil","type":"textarea","rows":4}
+    ],
+    "location":[[{"param":"options_page","operator":"==","value":"ck-coordonnees-horaires"}]],
+    "menu_order":0,"position":"normal","style":"default","label_placement":"top","instruction_placement":"label","active":true,"description":"Coordonnées et horaires affichés dans tout le portail."
+  },
+  {
+    "key": "group_ck_options_portail",
+    "title": "Options — Paramètres du portail",
+    "fields": [
+      {"key":"field_ck_portail_maire","label":"Maire en fonction","name":"maire","type":"post_object","post_type":["ck_elu"],"return_format":"id","ui":1},
+      {"key":"field_ck_portail_mandat_debut","label":"Début du mandat en cours","name":"mandat_debut","type":"date_picker","display_format":"d/m/Y","return_format":"Y-m-d","required":1},
+      {"key":"field_ck_portail_mandat_fin","label":"Fin du mandat en cours","name":"mandat_fin","type":"date_picker","display_format":"d/m/Y","return_format":"Y-m-d"},
+      {"key":"field_ck_portail_titre_accueil","label":"Titre d’accueil","name":"titre_accueil","type":"text","required":1},
+      {"key":"field_ck_portail_intro","label":"Introduction de l’accueil","name":"introduction_accueil","type":"textarea","rows":4},
+      {"key":"field_ck_portail_raccourcis","label":"Raccourcis d’accueil","name":"raccourcis","type":"repeater","layout":"table","button_label":"Ajouter un raccourci","max":6,"sub_fields":[
+        {"key":"field_ck_portail_raccourcis_libelle","label":"Libellé","name":"libelle","type":"text","required":1},
+        {"key":"field_ck_portail_raccourcis_lien","label":"Destination","name":"lien","type":"link","return_format":"array","required":1}
+      ]},
+      {"key":"field_ck_portail_projets","label":"Projets mis en avant","name":"projets","type":"relationship","post_type":["ck_projet"],"filters":["search","post_type"],"return_format":"id","max":6},
+      {"key":"field_ck_portail_bandeau","label":"Autoriser le bandeau d’alertes","name":"bandeau_actif","type":"true_false","message":"Afficher les alertes actives sur l’accueil","default_value":0,"ui":1},
+      {"key":"field_ck_portail_nombre_actualites","label":"Nombre d’actualités à l’accueil","name":"nombre_actualites","type":"number","default_value":3,"min":1,"max":6},
+      {"key":"field_ck_portail_mentions","label":"Page des mentions légales","name":"mentions_legales","type":"post_object","post_type":["page"],"return_format":"id","ui":1},
+      {"key":"field_ck_portail_confidentialite","label":"Page de confidentialité","name":"confidentialite","type":"post_object","post_type":["page"],"return_format":"id","ui":1}
+    ],
+    "location":[[{"param":"options_page","operator":"==","value":"ck-parametres-portail"}]],
+    "menu_order":0,"position":"normal","style":"default","label_placement":"top","instruction_placement":"label","active":true,"description":"Réglages éditoriaux globaux du portail institutionnel."
+  }
+]

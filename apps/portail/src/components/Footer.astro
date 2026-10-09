@@ -1,0 +1,29 @@
+---
+import { getPortalSettings } from '../lib/content';
+const settings = getPortalSettings();
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <p class="footer-kicker">Portail citoyen officiel</p>
+      <h2>{settings.denomination}</h2>
+      <p>{settings.presentation}</p>
+    </div>
+    <div>
+      <h3>Accès rapides</h3>
+      <a href="/services/">Services et démarches</a>
+      <a href="/transparence/documents/">Documents publics</a>
+      <a href="/participer/">Participer à la vie communale</a>
+    </div>
+    <div>
+      <h3>Nous contacter</h3>
+      <p>{settings.address}</p>
+      <p>{settings.telephone}</p>
+      <p>{settings.email}</p>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>{settings.denomination}</span>
+    <span>Informations publiées sous la responsabilité de la commune.</span>
+  </div>
+</footer>

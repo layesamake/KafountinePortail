@@ -1,0 +1,26 @@
+---
+interface Props {
+  title: string;
+  eyebrow: string;
+  description: string;
+  href?: string;
+  linkLabel?: string;
+}
+
+const { title, eyebrow, description, href = '/contact/', linkLabel = 'Nous contacter' } = Astro.props;
+---
+<section class="page-hero">
+  <div class="container narrow">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    <p>{description}</p>
+  </div>
+</section>
+<section class="section">
+  <div class="container empty-state">
+    <span class="empty-state-number">En préparation</span>
+    <h2>Cette rubrique sera alimentée avec les contenus validés par la commune.</h2>
+    <p>Les données publiques seront publiées progressivement depuis le CMS institutionnel.</p>
+    <a class="button button-primary" href={href}>{linkLabel} <span aria-hidden="true">→</span></a>
+  </div>
+</section>

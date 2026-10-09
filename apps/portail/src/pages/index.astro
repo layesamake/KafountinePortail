@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import { getPortalSettings } from '../lib/content';
+
+const settings = getPortalSettings();
+---
+<Base title="Votre commune, vos services">
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">PORTAIL CITOYEN OFFICIEL</p>
+        <h1>Votre commune,<br /><em>vos services.</em></h1>
+        <p class="hero-intro">{settings.presentation}</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="/services/">Accéder aux démarches <span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="/conseil/">Découvrir la commune</a>
+        </div>
+      </div>
+      <aside class="welcome-card" aria-label="Repères de la commune">
+        <p class="card-label">Kafountine en bref</p>
+        <dl>
+          <div><dt>Région</dt><dd>{settings.region}</dd></div>
+          <div><dt>Département</dt><dd>{settings.departement}</dd></div>
+          <div><dt>Arrondissement</dt><dd>{settings.arrondissement}</dd></div>
+        </dl>
+        <a href="/mairie/">Voir les informations de la mairie <span aria-hidden="true">↗</span></a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section-quick-actions" aria-labelledby="actions-title">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">EN UN CLIC</p><h2 id="actions-title">Les démarches et informations les plus utiles</h2></div>
+        <a class="text-link" href="/recherche/">Rechercher sur le portail <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="action-grid">
+        {settings.quickActions.map((action) => (
+          <a class="action-card" href={action.href}>
+            <span class="action-number">{action.icon}</span>
+            <span class="action-content"><strong>{action.label}</strong><span>{action.description}</span></span>
+            <span class="action-arrow" aria-hidden="true">↗</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-split" aria-labelledby="participation-title">
+    <div class="container split-grid">
+      <div>
+        <p class="eyebrow">UNE COMMUNE QUI INFORME</p>
+        <h2 id="participation-title">Suivre les décisions, les projets et la vie locale.</h2>
+      </div>
+      <div class="split-copy">
+        <p>Le portail rassemble progressivement les services municipaux, les informations du conseil communal, les projets en cours et les documents publics validés.</p>
+        <a class="button button-dark" href="/projets/">Voir les projets de la commune <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+</Base>

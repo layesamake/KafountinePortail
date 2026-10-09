@@ -1,0 +1,50 @@
+# Dependencies and generated files
+node_modules/
+**/node_modules/
+.astro/
+**/.astro/
+dist/
+**/dist/
+.next/
+**/.next/
+out/
+**/test-results/
+**/playwright-report/
+.env
+.env.*
+!.env.example
+
+# Local archives and temporary extraction work
+sauve/
+.tmp_kafountine_doc_review/
+**/.tmp_kafountine_doc_review/
+
+# Legacy local prototype intentionally excluded from the portal repository
+apps/web/
+
+# Kafountine 360 reference/export material stays outside this repository
+docs/kafountine-360/
+exports/kafountine-360-acf/
+exports/kafountine-360-core/
+exports/kafountine-360-core-*.zip
+exports/kafountine-360-elementor/
+exports/entete.json
+exports/footer.json
+exports/global-classes.json
+exports/loop-actualites.json
+exports/page-81-edit.json
+exports/wp-routes.json
+
+# Local source documents and personal data; never publish in this public repository
+docs/1 - SUR LE CONSEIL COMMUNAL-*/
+docs/2 - SUR LE PERSONNEL DE LA MAIRIE-*/
+docs/3 - RÉPERTOIRE DES DOCUMENTS MUNICIPAUX-*/
+docs/personnel_mairie.txt
+exports/donnees-commissions-municipales.json
+exports/donnees-elus-municipaux.json
+exports/donnees-personnel-administratif.json
+exports/commissions/
+exports/commissions-kafountine/
+exports/commissions-kafountine.zip
+exports/organigramme-elementor.json
+exports/organigramme/

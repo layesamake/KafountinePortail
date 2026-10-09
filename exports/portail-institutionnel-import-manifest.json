@@ -1,0 +1,27 @@
+{
+  "project": "Portail institutionnel de la Commune de Kafountine",
+  "status": "validated_for_import_preparation",
+  "sources": {
+    "council_members": {"count": 56, "target": "ck_elu", "source": "docs/1 - SUR LE CONSEIL COMMUNAL-20261004T110742Z-1-001/1 - SUR LE CONSEIL COMMUNAL/1 - Conseil communal - Liste des 56 membres.docx"},
+    "municipal_bureau": {"count": 5, "target": "ck_elu", "source": "docs/1 - SUR LE CONSEIL COMMUNAL-20261004T110742Z-1-001/1 - SUR LE CONSEIL COMMUNAL/2 - Conseil communal - Organigramme de son Bureau.docx"},
+    "commissions": {"count": 18, "target": "ck_commission", "source": "docs/1 - SUR LE CONSEIL COMMUNAL-20261004T110742Z-1-001/1 - SUR LE CONSEIL COMMUNAL/3 - Conseil communal - Ses commissions techniques.docx"},
+    "administrative_staff": {"count": 25, "target": "ck_agent + ck_service", "source": "docs/2 - SUR LE PERSONNEL DE LA MAIRIE-20261004T110817Z-1-001/2 - SUR LE PERSONNEL DE LA MAIRIE/1 - Personnel administratif - Fiche de collecte nominative Organigramme.docx"},
+    "councillor_photos": {"count": 26, "target": "media + ck_elu", "source": "docs/1 - SUR LE CONSEIL COMMUNAL-20261004T110742Z-1-001/1 - SUR LE CONSEIL COMMUNAL/Photo Conseillers"},
+    "municipal_document_catalog": {"categories": 17, "target": "ck_type_document + ck_document", "source": "docs/3 - RÉPERTOIRE DES DOCUMENTS MUNICIPAUX-20261004T110833Z-1-001/3 - RÉPERTOIRE DES DOCUMENTS MUNICIPAUX/Repertoire documents municipaux Kafountine _ Fait de concert avec le SG de la Mairie.docx"},
+    "villages": {"count": 19, "target": "ck_zone", "source": "exports/wordpress-villages-kafountine.xml"},
+    "municipal_logo": {"count": 1, "target": "ck_identite.logo", "source": "docs/logo/Logo-Kafountine.avif"}
+  },
+  "required_order": [
+    "acf-portail-institutionnel-types.json",
+    "acf-portail-institutionnel-taxonomies-options.json",
+    "wordpress-villages-kafountine.xml",
+    "portail-institutionnel-donnees-source.json",
+    "media-and-relations-import"
+  ],
+  "quality_flags": [
+    "Les 19 villages officiels ne doivent pas être remplacés par les lieux de résidence figurant dans la liste des conseillers.",
+    "Les rapporteurs des commissions 9, 17 et 18 sont à renseigner.",
+    "Les données de contact et les photos doivent être confirmées comme publiables.",
+    "Le répertoire des documents décrit des types de pièces ; les fichiers officiels ne sont pas présents dans docs."
+  ]
+}
