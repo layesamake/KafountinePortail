@@ -18,6 +18,14 @@ test('la page mairie présente les informations institutionnelles', async ({ pag
   await expect(page.getByRole('heading', { name: /Coordonnées et horaires/i })).toBeVisible();
 });
 
+test('la page des services affiche les fiches du CMS', async ({ page }) => {
+  await page.goto('/services/');
+
+  await expect(page.getByRole('heading', { name: /Services municipaux/i })).toBeVisible();
+  await expect(page.getByText('Cabinet du maire', { exact: true })).toBeVisible();
+  await expect(page.getByText(/21 services publiés/i)).toBeVisible();
+});
+
 test('la page des villages liste les zones du CMS', async ({ page }) => {
   await page.goto('/villages/');
 

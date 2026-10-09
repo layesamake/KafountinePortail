@@ -1,7 +1,45 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SectionPlaceholder from '../../components/SectionPlaceholder.astro';
+import { getPortalServices } from '../../lib/content';
+
+const services = await getPortalServices();
 ---
-<Base title="Services et démarches">
-  <SectionPlaceholder eyebrow="SERVICES MUNICIPAUX" title="Services et démarches" description="Trouvez les informations nécessaires pour préparer vos démarches auprès de la commune." />
+<Base title="Services municipaux" description="Les services de la mairie de Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">PORTAIL CITOYEN</p>
+      <h1>Services municipaux</h1>
+      <p>Retrouvez l’organisation des services de la mairie et les informations disponibles pour vos démarches.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      {services.length > 0 ? (
+        <>
+          <div class="section-heading">
+            <div><p class="eyebrow">ORGANISATION MUNICIPALE</p><h2>Les services de la commune</h2></div>
+            <span class="text-link">{services.length} services publiés</span>
+          </div>
+          <div class="service-grid">
+            {services.map((service, index) => (
+              <a class="service-card" href={`/services/${service.slug}/`}>
+                <span class="service-number">{String(index + 1).padStart(2, '0')}</span>
+                <span class="service-content">
+                  <strong set:html={service.title.rendered}></strong>
+                  <span set:html={service.excerpt.rendered || service.content.rendered}></span>
+                </span>
+                <span class="service-arrow" aria-hidden="true">↗</span>
+              </a>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-state-number">En cours de publication</span>
+          <h2>Les services municipaux seront bientôt disponibles.</h2>
+          <p>Les fiches sont en cours de validation par la mairie.</p>
+        </div>
+      )}
+    </div>
+  </section>
 </Base>
