@@ -41,6 +41,27 @@ export interface PortalProject {
   ck_zone?: number[];
 }
 
+export interface PortalDocument {
+  id: number;
+  date: string;
+  slug: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+  link: string;
+  ck_zone?: number[];
+  ck_type_document?: number[];
+}
+
+export interface PortalTerm {
+  id: number;
+  count: number;
+  name: string;
+  slug: string;
+  taxonomy: string;
+}
+
+
 export interface PortalZone {
   id: number;
   count: number;
@@ -144,6 +165,16 @@ export async function getPortalProjects(): Promise<PortalProject[]> {
   return Array.isArray(projects) ? projects : [];
 }
 
+export async function getPortalDocuments(): Promise<PortalDocument[]> {
+  const documents = await fetchCmsJson<PortalDocument[]>('/wp-json/wp/v2/ck_document?per_page=100&orderby=date&order=desc');
+  return Array.isArray(documents) ? documents : [];
+}
+
+export async function getPortalDocumentTypes(): Promise<PortalTerm[]> {
+  const types = await fetchCmsJson<PortalTerm[]>('/wp-json/wp/v2/ck_type_document?per_page=100&orderby=name&order=asc');
+  return Array.isArray(types) ? types : [];
+}
+
 export async function getPortalZones(): Promise<PortalZone[]> {
   const zones = await fetchCmsJson<PortalZone[]>('/wp-json/wp/v2/ck_zone?per_page=100&orderby=name&order=asc');
   return Array.isArray(zones) ? zones : [];
@@ -165,12 +196,13 @@ function searchText(value: { rendered: string }): string {
 }
 
 export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
-  const [services, members, commissions, zones, projects] = await Promise.all([
+  const [services, members, commissions, zones, projects, documents] = await Promise.all([
     getPortalServices(),
     getPortalCouncilMembers(),
     getPortalCommissions(),
     getPortalZones(),
     getPortalProjects(),
+    getPortalDocuments(),
   ]);
 
   return [
@@ -203,6 +235,12 @@ export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
       excerpt: searchText(project.excerpt) || searchText(project.content),
       type: 'Projet municipal',
       href: `/projets/${project.slug}/`,
+    })),
+    ...documents.map((document) => ({
+      title: searchText(document.title),
+      excerpt: searchText(document.excerpt) || searchText(document.content),
+      type: 'Document public',
+      href: '/transparence/documents/',
     })),
   ].filter((entry) => entry.title.length > 0);
 }

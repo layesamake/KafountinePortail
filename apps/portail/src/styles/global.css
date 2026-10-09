@@ -138,8 +138,17 @@ dd { margin: 0; color: var(--navy); font-weight: 800; text-align: right; }
 .search-result-card p { margin: 0; color: var(--muted); }
 
 .filter-form { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
-.filter-form label { color: var(--navy); font-weight: 800; }
+.filter-form label { display: block; margin-bottom: 6px; color: var(--navy); font-weight: 800; }
 .filter-form select { min-width: 240px; border: 1px solid #a9c4d3; border-radius: 6px; padding: 10px 12px; color: var(--ink); background: #fff; }
+.document-filters { align-items: end; }
+.document-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.document-card { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 24px; }
+.document-number { color: var(--gold); font-size: .75rem; font-weight: 900; letter-spacing: .1em; }
+.document-card .card-label { margin: 18px 0 8px; }
+.document-card h3 { margin: 0 0 8px; font-size: 1.25rem; }
+.document-meta { color: var(--muted); font-size: .86rem; }
+.document-card .cms-content { font-size: .9rem; }
+.document-card .text-link { display: inline-block; margin-top: 8px; }
 .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .project-card { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 24px; }
 .project-number { color: var(--gold); font-size: .75rem; font-weight: 900; letter-spacing: .1em; }
@@ -179,6 +188,7 @@ dd { margin: 0; color: var(--navy); font-weight: 800; text-align: right; }
   .action-grid { grid-template-columns: 1fr; }
   .member-grid, .commission-grid { grid-template-columns: 1fr; }
   .project-grid { grid-template-columns: 1fr; }
+  .document-grid { grid-template-columns: 1fr; }
   .filter-form { display: grid; }
   .filter-form select { min-width: 0; width: 100%; }
   .service-grid { grid-template-columns: 1fr; }

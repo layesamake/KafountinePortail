@@ -52,6 +52,15 @@ test('la page des projets est reliée au CMS et prépare le filtre par zone', as
   await expect(page.getByLabel(/Filtrer par village ou zone/i)).toBeVisible();
 });
 
+test('la page des documents publics est reliée au CMS', async ({ page }) => {
+  await page.goto('/transparence/documents/');
+
+  await expect(page.getByRole('heading', { name: /Documents publics/i })).toBeVisible();
+  await expect(page.getByText(/0 documents publiés/i)).toBeVisible();
+  await expect(page.getByLabel(/Filtrer par type de document/i)).toBeVisible();
+  await expect(page.getByLabel(/Filtrer par village ou zone/i)).toBeVisible();
+});
+
 test('la recherche globale filtre les contenus publiés', async ({ page }) => {
   await page.goto('/recherche/');
 
