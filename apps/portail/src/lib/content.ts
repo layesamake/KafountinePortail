@@ -115,6 +115,11 @@ export async function getPortalServices(): Promise<PortalService[]> {
   return Array.isArray(services) ? services : [];
 }
 
+export async function getPortalAgents(): Promise<PortalPerson[]> {
+  const agents = await fetchCmsJson<PortalPerson[]>('/wp-json/wp/v2/ck_agent?per_page=100&orderby=title&order=asc');
+  return Array.isArray(agents) ? agents : [];
+}
+
 export async function getPortalCouncilMembers(): Promise<PortalPerson[]> {
   const members = await fetchCmsJson<PortalPerson[]>('/wp-json/wp/v2/ck_elu?per_page=100&orderby=title&order=asc');
   return Array.isArray(members) ? members : [];
@@ -128,4 +133,55 @@ export async function getPortalCommissions(): Promise<PortalCommission[]> {
 export async function getPortalZones(): Promise<PortalZone[]> {
   const zones = await fetchCmsJson<PortalZone[]>('/wp-json/wp/v2/ck_zone?per_page=100&orderby=name&order=asc');
   return Array.isArray(zones) ? zones : [];
+}
+
+export interface PortalSearchEntry {
+  title: string;
+  excerpt: string;
+  type: string;
+  href: string;
+}
+
+function stripHtml(value: string): string {
+  return value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function searchText(value: { rendered: string }): string {
+  return stripHtml(value.rendered || '');
+}
+
+export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
+  const [services, members, commissions, zones] = await Promise.all([
+    getPortalServices(),
+    getPortalCouncilMembers(),
+    getPortalCommissions(),
+    getPortalZones(),
+  ]);
+
+  return [
+    ...services.map((service) => ({
+      title: searchText(service.title),
+      excerpt: searchText(service.excerpt) || searchText(service.content),
+      type: 'Service municipal',
+      href: `/services/${service.slug}/`,
+    })),
+    ...members.map((member) => ({
+      title: searchText(member.title),
+      excerpt: searchText(member.excerpt) || searchText(member.content),
+      type: 'Élu municipal',
+      href: '/conseil/',
+    })),
+    ...commissions.map((commission) => ({
+      title: searchText(commission.title),
+      excerpt: searchText(commission.excerpt) || searchText(commission.content),
+      type: 'Commission municipale',
+      href: '/conseil/',
+    })),
+    ...zones.map((zone) => ({
+      title: zone.name,
+      excerpt: `${zone.count} contenus territoriaux associés`,
+      type: 'Village ou zone',
+      href: '/villages/',
+    })),
+  ].filter((entry) => entry.title.length > 0);
 }

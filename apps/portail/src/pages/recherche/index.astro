@@ -1,7 +1,95 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SectionPlaceholder from '../../components/SectionPlaceholder.astro';
+import { getPortalSearchEntries } from '../../lib/content';
+
+const entries = await getPortalSearchEntries();
 ---
-<Base title="Recherche">
-  <SectionPlaceholder eyebrow="RECHERCHE" title="Rechercher sur le portail" description="La recherche globale sera reliée aux services, démarches, élus, projets et documents publiés." />
+<Base title="Recherche" description="Recherchez un service, un élu, une commission ou un village sur le portail citoyen de Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">RECHERCHE</p>
+      <h1>Trouvez rapidement la bonne information.</h1>
+      <p>Recherchez dans les services municipaux, le conseil municipal et les villages publiés sur le portail.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <form class="search-form" id="portal-search-form" role="search">
+        <label for="portal-search-input">Que recherchez-vous ?</label>
+        <div class="search-form-row">
+          <input id="portal-search-input" name="q" type="search" placeholder="Ex. état civil, Abéné, sécurité…" autocomplete="off" />
+          <button class="button button-primary" type="submit">Rechercher</button>
+        </div>
+      </form>
+      <p class="search-status" id="portal-search-status" aria-live="polite">Saisissez un mot-clé pour commencer.</p>
+      <div class="search-results" id="portal-search-results"></div>
+      <noscript>
+        <div class="empty-state">
+          <h2>La recherche nécessite JavaScript.</h2>
+          <p>Vous pouvez parcourir directement les <a href="/services/">services municipaux</a>, le <a href="/conseil/">conseil municipal</a> et les <a href="/villages/">villages</a>.</p>
+        </div>
+      </noscript>
+    </div>
+  </section>
 </Base>
+
+<script define:vars={{ entries }}>
+  const searchEntries = entries;
+  const form = document.querySelector('#portal-search-form');
+  const input = document.querySelector('#portal-search-input');
+  const status = document.querySelector('#portal-search-status');
+  const results = document.querySelector('#portal-search-results');
+
+  const normalise = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+
+  const render = (rawQuery) => {
+    const query = normalise(rawQuery);
+    results.replaceChildren();
+    if (!query) {
+      status.textContent = 'Saisissez un mot-clé pour commencer.';
+      return;
+    }
+
+    const matches = searchEntries
+      .filter((entry) => normalise(`${entry.title} ${entry.excerpt} ${entry.type}`).includes(query))
+      .slice(0, 50);
+    status.textContent = matches.length === 1 ? '1 résultat trouvé.' : `${matches.length} résultats trouvés.`;
+
+    if (matches.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.innerHTML = '<h2>Aucun résultat pour cette recherche.</h2><p>Essayez un autre mot-clé ou parcourez les rubriques du portail.</p>';
+      results.append(empty);
+      return;
+    }
+
+    for (const entry of matches) {
+      const card = document.createElement('a');
+      card.className = 'search-result-card';
+      card.href = entry.href;
+      const type = document.createElement('span');
+      type.className = 'card-label';
+      type.textContent = entry.type;
+      const title = document.createElement('h2');
+      title.textContent = entry.title;
+      const excerpt = document.createElement('p');
+      excerpt.textContent = entry.excerpt;
+      card.append(type, title, excerpt);
+      results.append(card);
+    }
+  };
+
+  const initialQuery = new URLSearchParams(window.location.search).get('q') || '';
+  input.value = initialQuery;
+  render(initialQuery);
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const query = input.value.trim();
+    const url = new URL(window.location.href);
+    if (query) url.searchParams.set('q', query);
+    else url.searchParams.delete('q');
+    window.history.replaceState({}, '', url);
+    render(query);
+  });
+</script>

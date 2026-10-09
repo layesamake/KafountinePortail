@@ -1,8 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getPortalSettings } from '../../lib/content';
+import { getPortalSettings, getPortalServices, getPortalAgents } from '../../lib/content';
 
 const settings = getPortalSettings();
+const [services, agents] = await Promise.all([
+  getPortalServices(),
+  getPortalAgents(),
+]);
 ---
 <Base title="La mairie" description={`Informations pratiques et institutionnelles de ${settings.denomination}.`}>
   <section class="page-hero">
@@ -34,6 +38,50 @@ const settings = getPortalSettings();
           {settings.hours.map((entry) => <div><dt>{entry.day}</dt><dd>{entry.value}</dd></div>)}
         </dl>
       </article>
+    </div>
+  </section>
+
+  <section class="section section-split" aria-labelledby="organisation-title">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">ORGANISATION ADMINISTRATIVE</p><h2 id="organisation-title">Les services de la mairie</h2></div>
+        <span class="text-link">{services.length} services publiés</span>
+      </div>
+      {services.length > 0 ? (
+        <div class="service-grid">
+          {services.map((service, index) => (
+            <a class="service-card" href={`/services/${service.slug}/`}>
+              <span class="service-number">{String(index + 1).padStart(2, '0')}</span>
+              <span class="service-content"><strong set:html={service.title.rendered}></strong><span>Voir la fiche du service</span></span>
+              <span class="service-arrow" aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state"><h2>Les services municipaux seront bientôt disponibles.</h2></div>
+      )}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="agents-title">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">ÉQUIPE MUNICIPALE</p><h2 id="agents-title">Agents et responsables</h2></div>
+        <span class="text-link">{agents.length} agents publiés</span>
+      </div>
+      {agents.length > 0 ? (
+        <div class="member-grid">
+          {agents.map((agent, index) => (
+            <article class="member-card">
+              <span class="member-number">{String(index + 1).padStart(2, '0')}</span>
+              <h3 set:html={agent.title.rendered}></h3>
+              <p>Agent ou responsable municipal</p>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state"><h2>Les agents municipaux seront bientôt disponibles.</h2></div>
+      )}
     </div>
   </section>
 </Base>
