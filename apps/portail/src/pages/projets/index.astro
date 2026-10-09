@@ -32,7 +32,7 @@ const populatedZones = zones.filter((zone) => zone.count > 0);
       {projects.length > 0 ? (
         <div class="project-grid" id="project-results">
           {projects.map((project, index) => (
-            <article class="project-card" data-zones={project.ck_zone.join(',')}>
+            <article class="project-card" data-zones={(project.ck_zone ?? []).join(',')}>
               <span class="project-number">{String(index + 1).padStart(2, '0')}</span>
               <h3 set:html={project.title.rendered}></h3>
               <div class="cms-content" set:html={project.excerpt.rendered || project.content.rendered}></div>
