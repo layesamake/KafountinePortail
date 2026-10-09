@@ -5,6 +5,17 @@ export interface PortalQuickAction {
   icon: string;
 }
 
+export interface PortalService {
+  id: number;
+  slug: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+  link: string;
+  parent: number;
+  menu_order: number;
+}
+
 export interface PortalZone {
   id: number;
   count: number;
@@ -81,6 +92,11 @@ async function fetchCmsJson<T>(path: string): Promise<T | null> {
   } catch {
     return null;
   }
+}
+
+export async function getPortalServices(): Promise<PortalService[]> {
+  const services = await fetchCmsJson<PortalService[]>('/wp-json/wp/v2/ck_service?per_page=100&orderby=menu_order&order=asc');
+  return Array.isArray(services) ? services : [];
 }
 
 export async function getPortalZones(): Promise<PortalZone[]> {

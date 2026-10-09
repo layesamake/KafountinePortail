@@ -94,6 +94,18 @@ dd { margin: 0; color: var(--navy); font-weight: 800; text-align: right; }
 .content-card h2 { font-size: 2rem; }
 .content-card h3 { margin-top: 28px; font-size: 1rem; }
 .facts-list, .hours-list { margin-top: 24px; }
+.service-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.service-card { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: start; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+.service-card:hover { border-color: #a9c4d3; box-shadow: var(--shadow); transform: translateY(-3px); }
+.service-number { color: var(--gold); font-size: .78rem; font-weight: 900; }
+.service-content { display: grid; gap: 7px; }
+.service-content strong { color: var(--navy); }
+.service-content span { color: var(--muted); font-size: .9rem; line-height: 1.45; }
+.service-content p { margin: 0; }
+.service-arrow { color: var(--blue); font-size: 1.2rem; }
+.cms-content { color: var(--muted); line-height: 1.75; margin-bottom: 24px; }
+.cms-content h2, .cms-content h3 { color: var(--navy); }
+.cms-content a { color: var(--blue); text-decoration: underline; }
 .zone-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .zone-card { min-height: 150px; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
 .zone-number { color: var(--gold); font-size: .75rem; font-weight: 900; letter-spacing: .1em; }
@@ -135,6 +147,7 @@ dd { margin: 0; color: var(--navy); font-weight: 800; text-align: right; }
   .section-heading { display: block; }
   .section-heading .text-link { display: inline-block; margin-top: 15px; }
   .action-grid { grid-template-columns: 1fr; }
+  .service-grid { grid-template-columns: 1fr; }
   .zone-grid { grid-template-columns: 1fr; }
   .content-card { padding: 24px; }
   .footer-grid { grid-template-columns: 1fr; gap: 28px; }

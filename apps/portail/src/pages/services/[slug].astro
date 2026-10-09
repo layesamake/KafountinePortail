@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPortalServices } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const services = await getPortalServices();
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+---
+<Base title={service.title.rendered} description={`Informations sur le service municipal ${service.title.rendered}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">SERVICE MUNICIPAL</p>
+      <h1 set:html={service.title.rendered}></h1>
+      <p>Organisation et informations publiques de la mairie de Kafountine.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={service.content.rendered}></article>
+      <a class="button button-secondary" href="/services/">← Retour aux services municipaux</a>
+    </div>
+  </section>
+</Base>
