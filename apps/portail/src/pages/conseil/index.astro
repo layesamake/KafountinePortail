@@ -1,7 +1,66 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SectionPlaceholder from '../../components/SectionPlaceholder.astro';
+import { getPortalCouncilMembers, getPortalCommissions } from '../../lib/content';
+
+const [members, commissions] = await Promise.all([
+  getPortalCouncilMembers(),
+  getPortalCommissions(),
+]);
 ---
-<Base title="Conseil municipal">
-  <SectionPlaceholder eyebrow="CONSEIL MUNICIPAL" title="Le conseil communal" description="Élus, commissions, sessions et décisions de la commune de Kafountine." />
+<Base title="Conseil municipal" description="Les élus et commissions du Conseil municipal de Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">CONSEIL MUNICIPAL</p>
+      <h1>Le conseil municipal</h1>
+      <p>Découvrez les élus et les commissions qui participent à la vie institutionnelle de la commune de Kafountine.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="members-title">
+    <div class="container">
+      {members.length > 0 ? (
+        <>
+          <div class="section-heading">
+            <div><p class="eyebrow">ASSEMBLÉE COMMUNALE</p><h2 id="members-title">Les élus municipaux</h2></div>
+            <span class="text-link">{members.length} élus publiés</span>
+          </div>
+          <div class="member-grid">
+            {members.map((member, index) => (
+              <article class="member-card">
+                <span class="member-number">{String(index + 1).padStart(2, '0')}</span>
+                <h3 set:html={member.title.rendered}></h3>
+                <p>Membre du Conseil municipal</p>
+              </article>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div class="empty-state"><h2>Les élus municipaux seront bientôt disponibles.</h2></div>
+      )}
+    </div>
+  </section>
+
+  <section class="section section-split" aria-labelledby="commissions-title">
+    <div class="container">
+      {commissions.length > 0 ? (
+        <>
+          <div class="section-heading">
+            <div><p class="eyebrow">TRAVAIL THÉMATIQUE</p><h2 id="commissions-title">Les commissions municipales</h2></div>
+            <span class="text-link">{commissions.length} commissions publiées</span>
+          </div>
+          <div class="commission-grid">
+            {commissions.map((commission, index) => (
+              <article class="commission-card">
+                <span class="commission-number">{String(index + 1).padStart(2, '0')}</span>
+                <h3 set:html={commission.title.rendered}></h3>
+                <div class="cms-content" set:html={commission.content.rendered}></div>
+              </article>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div class="empty-state"><h2>Les commissions municipales seront bientôt disponibles.</h2></div>
+      )}
+    </div>
+  </section>
 </Base>

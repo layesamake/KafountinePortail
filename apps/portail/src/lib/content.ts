@@ -16,6 +16,22 @@ export interface PortalService {
   menu_order: number;
 }
 
+export interface PortalPerson {
+  id: number;
+  slug: string;
+  title: { rendered: string };
+  excerpt: { rendered: string; protected: boolean };
+  content: { rendered: string; protected: boolean };
+}
+
+export interface PortalCommission {
+  id: number;
+  slug: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+}
+
 export interface PortalZone {
   id: number;
   count: number;
@@ -97,6 +113,16 @@ async function fetchCmsJson<T>(path: string): Promise<T | null> {
 export async function getPortalServices(): Promise<PortalService[]> {
   const services = await fetchCmsJson<PortalService[]>('/wp-json/wp/v2/ck_service?per_page=100&orderby=menu_order&order=asc');
   return Array.isArray(services) ? services : [];
+}
+
+export async function getPortalCouncilMembers(): Promise<PortalPerson[]> {
+  const members = await fetchCmsJson<PortalPerson[]>('/wp-json/wp/v2/ck_elu?per_page=100&orderby=title&order=asc');
+  return Array.isArray(members) ? members : [];
+}
+
+export async function getPortalCommissions(): Promise<PortalCommission[]> {
+  const commissions = await fetchCmsJson<PortalCommission[]>('/wp-json/wp/v2/ck_commission?per_page=100&orderby=title&order=asc');
+  return Array.isArray(commissions) ? commissions : [];
 }
 
 export async function getPortalZones(): Promise<PortalZone[]> {
