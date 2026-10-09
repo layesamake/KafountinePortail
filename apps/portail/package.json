@@ -11,6 +11,7 @@
     "build": "astro build",
     "preview": "astro preview --host 127.0.0.1",
     "check": "astro check",
+    "check:cms": "node scripts/check-cms.mjs",
     "test": "playwright test"
   },
   "dependencies": {
