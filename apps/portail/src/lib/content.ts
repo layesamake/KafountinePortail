@@ -41,6 +41,26 @@ export interface PortalProject {
   ck_zone?: number[];
 }
 
+export interface PortalEvent {
+  id: number;
+  slug: string;
+  date: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+  ck_zone?: number[];
+}
+
+export interface PortalAlert {
+  id: number;
+  slug: string;
+  date: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+  ck_zone?: number[];
+}
+
 export interface PortalDemarche {
   id: number;
   slug: string;
@@ -174,6 +194,16 @@ export async function getPortalProjects(): Promise<PortalProject[]> {
   return Array.isArray(projects) ? projects : [];
 }
 
+export async function getPortalEvents(): Promise<PortalEvent[]> {
+  const events = await fetchCmsJson<PortalEvent[]>('/wp-json/wp/v2/ck_evenement?per_page=100&orderby=date&order=asc');
+  return Array.isArray(events) ? events : [];
+}
+
+export async function getPortalAlerts(): Promise<PortalAlert[]> {
+  const alerts = await fetchCmsJson<PortalAlert[]>('/wp-json/wp/v2/ck_alerte?per_page=100&orderby=date&order=desc');
+  return Array.isArray(alerts) ? alerts : [];
+}
+
 export async function getPortalDemarches(): Promise<PortalDemarche[]> {
   const demarches = await fetchCmsJson<PortalDemarche[]>('/wp-json/wp/v2/ck_demarche?per_page=100&orderby=title&order=asc');
   return Array.isArray(demarches) ? demarches : [];
@@ -215,13 +245,15 @@ function searchText(value: { rendered: string }): string {
 }
 
 export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
-  const [services, members, commissions, zones, projects, demarches, documents] = await Promise.all([
+  const [services, members, commissions, zones, projects, demarches, events, alerts, documents] = await Promise.all([
     getPortalServices(),
     getPortalCouncilMembers(),
     getPortalCommissions(),
     getPortalZones(),
     getPortalProjects(),
     getPortalDemarches(),
+    getPortalEvents(),
+    getPortalAlerts(),
     getPortalDocuments(),
   ]);
 
@@ -261,6 +293,18 @@ export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
       excerpt: searchText(demarche.excerpt) || searchText(demarche.content),
       type: 'Démarche administrative',
       href: `/demarches/${demarche.slug}/`,
+    })),
+    ...events.map((event) => ({
+      title: searchText(event.title),
+      excerpt: searchText(event.excerpt) || searchText(event.content),
+      type: 'Événement communal',
+      href: `/agenda/${event.slug}/`,
+    })),
+    ...alerts.map((alert) => ({
+      title: searchText(alert.title),
+      excerpt: searchText(alert.excerpt) || searchText(alert.content),
+      type: 'Alerte communale',
+      href: '/participer/',
     })),
     ...documents.map((document) => ({
       title: searchText(document.title),

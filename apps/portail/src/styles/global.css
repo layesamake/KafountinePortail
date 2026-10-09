@@ -153,6 +153,7 @@ dd { margin: 0; color: var(--navy); font-weight: 800; text-align: right; }
 .document-meta { color: var(--muted); font-size: .86rem; }
 .document-card .cms-content { font-size: .9rem; }
 .document-card .text-link { display: inline-block; margin-top: 8px; }
+.alert-card { border-top: 4px solid var(--gold); }
 .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .project-card { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 24px; }
 .project-number { color: var(--gold); font-size: .75rem; font-weight: 900; letter-spacing: .1em; }

@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPortalEvents } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const events = await getPortalEvents();
+  return events.map((event) => ({
+    params: { slug: event.slug },
+    props: { event },
+  }));
+}
+
+const { event } = Astro.props;
+const date = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(event.date));
+---
+<Base title={event.title.rendered} description={`Événement communal : ${event.title.rendered}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">AGENDA COMMUNAL</p>
+      <h1 set:html={event.title.rendered}></h1>
+      <p>{date}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={event.content.rendered}></article>
+      <a class="button button-secondary" href="/participer/">← Retour à l’agenda</a>
+    </div>
+  </section>
+</Base>
