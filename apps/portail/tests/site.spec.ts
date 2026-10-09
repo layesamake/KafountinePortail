@@ -11,6 +11,24 @@ test('accueil institutionnel expose les actions prioritaires', async ({ page }) 
   await expect(page.getByRole('link', { name: 'Conseil municipal', exact: true })).toBeVisible();
 });
 
+test('le menu mobile s’ouvre et expose la navigation principale', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  const menu = page.locator('.menu-button');
+  await expect(menu).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Navigation principale' })).not.toBeVisible();
+
+  await menu.click();
+
+  await expect(menu).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('navigation', { name: 'Navigation principale' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'La mairie', exact: true })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Fermer le menu' }).click();
+  await expect(menu).toHaveAttribute('aria-expanded', 'false');
+});
+
 test('la page mairie présente les informations institutionnelles', async ({ page }) => {
   await page.goto('/mairie/');
 
