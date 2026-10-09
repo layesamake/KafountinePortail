@@ -26,12 +26,35 @@ const isCurrent = (href: string) => href === '/' ? currentPath === href : curren
     <a class="brand" href="/" aria-label="Commune de Kafountine, accueil">
       <img class="brand-logo" src="/images/logo-commune-kafountine.png" alt="Commune de Kafountine — portail citoyen officiel" width="1672" height="941" />
     </a>
-    <nav aria-label="Navigation principale">
+    <nav id="primary-navigation" aria-label="Navigation principale">
       {links.map((link) => (
         <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}</a>
       ))}
       <a class="nav-action" href="/participer/">Participer</a>
     </nav>
-    <button class="menu-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false">Menu</button>
+    <button class="menu-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="primary-navigation">Menu</button>
   </div>
 </header>
+<script>
+  const header = document.querySelector('.site-header');
+  const button = document.querySelector('.menu-button');
+  const navigation = document.querySelector('#primary-navigation');
+
+  const closeMenu = () => {
+    header?.classList.remove('menu-open');
+    button?.setAttribute('aria-expanded', 'false');
+    button?.setAttribute('aria-label', 'Ouvrir le menu');
+  };
+
+  button?.addEventListener('click', () => {
+    const isOpen = button.getAttribute('aria-expanded') === 'true';
+    header?.classList.toggle('menu-open', !isOpen);
+    button.setAttribute('aria-expanded', String(!isOpen));
+    button.setAttribute('aria-label', isOpen ? 'Ouvrir le menu' : 'Fermer le menu');
+  });
+
+  navigation?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenu();
+  });
+</script>
