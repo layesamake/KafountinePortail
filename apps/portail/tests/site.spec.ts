@@ -43,3 +43,14 @@ test('la page des villages liste les zones du CMS', async ({ page }) => {
   await expect(page.getByText('Abéné', { exact: true })).toBeVisible();
   await expect(page.getByText('Niomoune', { exact: true })).toBeVisible();
 });
+
+test('la recherche globale filtre les contenus publiés', async ({ page }) => {
+  await page.goto('/recherche/');
+
+  await expect(page.getByRole('heading', { name: /Trouvez rapidement la bonne information/i })).toBeVisible();
+  const input = page.getByRole('searchbox', { name: /Que recherchez-vous/i });
+  await input.fill('Abéné');
+  await page.getByRole('button', { name: 'Rechercher' }).click();
+  await expect(page.getByText(/résultat/i)).toBeVisible();
+  await expect(page.getByRole('link', { name: /Village ou zone Abéné/i })).toBeVisible();
+});
