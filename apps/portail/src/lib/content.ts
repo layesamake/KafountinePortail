@@ -41,6 +41,15 @@ export interface PortalProject {
   ck_zone?: number[];
 }
 
+export interface PortalDemarche {
+  id: number;
+  slug: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+  ck_famille_demarche?: number[];
+}
+
 export interface PortalDocument {
   id: number;
   date: string;
@@ -165,6 +174,16 @@ export async function getPortalProjects(): Promise<PortalProject[]> {
   return Array.isArray(projects) ? projects : [];
 }
 
+export async function getPortalDemarches(): Promise<PortalDemarche[]> {
+  const demarches = await fetchCmsJson<PortalDemarche[]>('/wp-json/wp/v2/ck_demarche?per_page=100&orderby=title&order=asc');
+  return Array.isArray(demarches) ? demarches : [];
+}
+
+export async function getPortalDemarcheFamilies(): Promise<PortalTerm[]> {
+  const families = await fetchCmsJson<PortalTerm[]>('/wp-json/wp/v2/ck_famille_demarche?per_page=100&orderby=name&order=asc');
+  return Array.isArray(families) ? families : [];
+}
+
 export async function getPortalDocuments(): Promise<PortalDocument[]> {
   const documents = await fetchCmsJson<PortalDocument[]>('/wp-json/wp/v2/ck_document?per_page=100&orderby=date&order=desc');
   return Array.isArray(documents) ? documents : [];
@@ -196,12 +215,13 @@ function searchText(value: { rendered: string }): string {
 }
 
 export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
-  const [services, members, commissions, zones, projects, documents] = await Promise.all([
+  const [services, members, commissions, zones, projects, demarches, documents] = await Promise.all([
     getPortalServices(),
     getPortalCouncilMembers(),
     getPortalCommissions(),
     getPortalZones(),
     getPortalProjects(),
+    getPortalDemarches(),
     getPortalDocuments(),
   ]);
 
@@ -235,6 +255,12 @@ export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
       excerpt: searchText(project.excerpt) || searchText(project.content),
       type: 'Projet municipal',
       href: `/projets/${project.slug}/`,
+    })),
+    ...demarches.map((demarche) => ({
+      title: searchText(demarche.title),
+      excerpt: searchText(demarche.excerpt) || searchText(demarche.content),
+      type: 'Démarche administrative',
+      href: `/demarches/${demarche.slug}/`,
     })),
     ...documents.map((document) => ({
       title: searchText(document.title),

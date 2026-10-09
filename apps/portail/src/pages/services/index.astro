@@ -1,10 +1,14 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getPortalServices } from '../../lib/content';
+import { getPortalDemarcheFamilies, getPortalDemarches, getPortalServices } from '../../lib/content';
 
-const services = await getPortalServices();
+const [services, demarches, families] = await Promise.all([
+  getPortalServices(),
+  getPortalDemarches(),
+  getPortalDemarcheFamilies(),
+]);
 ---
-<Base title="Services municipaux" description="Les services de la mairie de Kafountine.">
+<Base title="Services municipaux" description="Les services et démarches de la mairie de Kafountine.">
   <section class="page-hero">
     <div class="container narrow">
       <p class="eyebrow">PORTAIL CITOYEN</p>
@@ -42,4 +46,50 @@ const services = await getPortalServices();
       )}
     </div>
   </section>
+  <section class="section section-muted" id="demarches">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">GUIDE CITOYEN</p><h2>Démarches administratives</h2></div>
+        <span class="text-link">{demarches.length} démarches publiées</span>
+      </div>
+      <div class="filter-bar" aria-label="Filtres des démarches">
+        <label for="demarche-family-filter">Filtrer par famille de démarche</label>
+        <select id="demarche-family-filter">
+          <option value="">Toutes les familles</option>
+          {families.map((family) => <option value={family.id}>{family.name}</option>)}
+        </select>
+      </div>
+      {demarches.length > 0 ? (
+        <div class="service-grid" id="demarche-list">
+          {demarches.map((demarche, index) => (
+            <a class="service-card demarche-card" data-families={(demarche.ck_famille_demarche ?? []).join(',')} href={`/demarches/${demarche.slug}/`}>
+              <span class="service-number">{String(index + 1).padStart(2, '0')}</span>
+              <span class="service-content">
+                <strong set:html={demarche.title.rendered}></strong>
+                <span set:html={demarche.excerpt.rendered || demarche.content.rendered}></span>
+              </span>
+              <span class="service-arrow" aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-state-number">En cours de publication</span>
+          <h3>Les démarches administratives seront bientôt disponibles.</h3>
+          <p>Les fiches et pièces à fournir seront publiées après validation par la mairie.</p>
+        </div>
+      )}
+    </div>
+  </section>
 </Base>
+<script>
+  const familyFilter = document.querySelector('#demarche-family-filter') as HTMLSelectElement | null;
+  const cards = [...document.querySelectorAll<HTMLElement>('.demarche-card')];
+  familyFilter?.addEventListener('change', () => {
+    const selected = familyFilter.value;
+    cards.forEach((card) => {
+      const families = card.dataset.families?.split(',').filter(Boolean) ?? [];
+      card.hidden = Boolean(selected) && !families.includes(selected);
+    });
+  });
+</script>
