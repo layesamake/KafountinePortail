@@ -18,6 +18,16 @@ test('la page mairie présente les informations institutionnelles', async ({ pag
   await expect(page.getByRole('heading', { name: /Coordonnées et horaires/i })).toBeVisible();
 });
 
+test('la page du conseil affiche les élus et commissions du CMS', async ({ page }) => {
+  await page.goto('/conseil/');
+
+  await expect(page.getByRole('heading', { name: /Le conseil municipal/i })).toBeVisible();
+  await expect(page.getByText(/56 élus publiés/i)).toBeVisible();
+  await expect(page.getByText(/18 commissions publiées/i)).toBeVisible();
+  await expect(page.getByText('Aminata Soumare DIATTA', { exact: true })).toBeVisible();
+  await expect(page.getByText('Sécurité', { exact: true })).toBeVisible();
+});
+
 test('la page des services affiche les fiches du CMS', async ({ page }) => {
   await page.goto('/services/');
 
