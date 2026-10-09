@@ -17,3 +17,11 @@ test('la page mairie présente les informations institutionnelles', async ({ pag
   await expect(page.getByRole('heading', { name: /La mairie de Kafountine/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Coordonnées et horaires/i })).toBeVisible();
 });
+
+test('la page des villages liste les zones du CMS', async ({ page }) => {
+  await page.goto('/villages/');
+
+  await expect(page.getByRole('heading', { name: /Les villages de Kafountine/i })).toBeVisible();
+  await expect(page.getByText('Abéné', { exact: true })).toBeVisible();
+  await expect(page.getByText('Niomoune', { exact: true })).toBeVisible();
+});

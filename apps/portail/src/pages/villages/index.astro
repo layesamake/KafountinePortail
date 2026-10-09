@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPortalZones } from '../../lib/content';
+
+const zones = await getPortalZones();
+---
+<Base title="Villages" description="Les 19 villages et zones de la commune de Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">TERRITOIRE COMMUNAL</p>
+      <h1>Les villages de Kafountine</h1>
+      <p>Retrouvez les villages et zones officiellement référencés par la commune. Les fiches détaillées seront enrichies progressivement avec les informations validées par la mairie.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      {zones.length > 0 ? (
+        <div class="zone-grid">
+          {zones.map((zone) => (
+            <article class="zone-card">
+              <span class="zone-number">{String(zone.id).padStart(2, '0')}</span>
+              <h2>{zone.name}</h2>
+              <p>Zone officielle de la commune</p>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-state-number">Contenu indisponible</span>
+          <h2>Les villages ne sont pas momentanément disponibles.</h2>
+          <p>Le portail réessaiera de lire les données du CMS lors de la prochaine génération.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>
