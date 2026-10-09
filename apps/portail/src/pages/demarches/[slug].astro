@@ -1,0 +1,29 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPortalDemarches } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const demarches = await getPortalDemarches();
+  return demarches.map((demarche) => ({
+    params: { slug: demarche.slug },
+    props: { demarche },
+  }));
+}
+
+const { demarche } = Astro.props;
+---
+<Base title={demarche.title.rendered} description={`Informations sur la démarche administrative ${demarche.title.rendered}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">DÉMARCHE ADMINISTRATIVE</p>
+      <h1 set:html={demarche.title.rendered}></h1>
+      <p>Pièces, étapes et informations publiées par la mairie de Kafountine.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={demarche.content.rendered}></article>
+      <a class="button button-secondary" href="/services/#demarches">← Retour aux démarches</a>
+    </div>
+  </section>
+</Base>

@@ -36,6 +36,14 @@ test('la page des services affiche les fiches du CMS', async ({ page }) => {
   await expect(page.getByText(/21 services publiés/i)).toBeVisible();
 });
 
+test('la page des services expose aussi le catalogue des démarches', async ({ page }) => {
+  await page.goto('/services/');
+
+  await expect(page.getByRole('heading', { name: 'Démarches administratives', exact: true })).toBeVisible();
+  await expect(page.getByText(/0 démarches publiées/i)).toBeVisible();
+  await expect(page.getByLabel(/Filtrer par famille de démarche/i)).toBeVisible();
+});
+
 test('la page des villages liste les zones du CMS', async ({ page }) => {
   await page.goto('/villages/');
 
