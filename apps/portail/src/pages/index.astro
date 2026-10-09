@@ -1,8 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getPortalSettings } from '../lib/content';
+import { getPortalSettings, getPortalZones } from '../lib/content';
 
 const settings = getPortalSettings();
+const zones = await getPortalZones();
 ---
 <Base title="Votre commune, vos services">
   <section class="hero-section">
@@ -22,6 +23,7 @@ const settings = getPortalSettings();
           <div><dt>Région</dt><dd>{settings.region}</dd></div>
           <div><dt>Département</dt><dd>{settings.departement}</dd></div>
           <div><dt>Arrondissement</dt><dd>{settings.arrondissement}</dd></div>
+          <div><dt>Villages et zones</dt><dd>{zones.length || '—'}</dd></div>
         </dl>
         <a href="/mairie/">Voir les informations de la mairie <span aria-hidden="true">↗</span></a>
       </aside>

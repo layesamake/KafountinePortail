@@ -5,6 +5,14 @@ export interface PortalQuickAction {
   icon: string;
 }
 
+export interface PortalZone {
+  id: number;
+  count: number;
+  name: string;
+  slug: string;
+  taxonomy: string;
+}
+
 export interface PortalSettings {
   denomination: string;
   presentation: string;
@@ -60,4 +68,22 @@ export function getPortalSettings(): PortalSettings {
 
 export function getCmsUrl(): string {
   return import.meta.env.CMS_URL || 'https://cms.communekafountine.com';
+}
+
+async function fetchCmsJson<T>(path: string): Promise<T | null> {
+  try {
+    const response = await fetch(`${getCmsUrl()}${path}`, {
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!response.ok) return null;
+    return (await response.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
+export async function getPortalZones(): Promise<PortalZone[]> {
+  const zones = await fetchCmsJson<PortalZone[]>('/wp-json/wp/v2/ck_zone?per_page=100&orderby=name&order=asc');
+  return Array.isArray(zones) ? zones : [];
 }
