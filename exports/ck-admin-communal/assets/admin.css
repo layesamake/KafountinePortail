@@ -428,10 +428,35 @@ body.ck-admin-communal {
 	font-size: 22px;
 }
 
+.ck-dashboard-card-primary h2,
 .ck-dashboard-card-primary h3 {
-	color: #fff;
+	color: #fff !important;
 }
 
+.ck-dashboard-card-primary .button-secondary {
+	color: var(--ck-navy) !important;
+	background: #fff !important;
+	border-color: #fff !important;
+}
+
+.ck-dashboard-card-primary .button-secondary:hover,
+.ck-dashboard-card-primary .button-secondary:focus {
+	color: var(--ck-navy) !important;
+	background: #eaf5ff !important;
+	border-color: #eaf5ff !important;
+}
+
+.ck-dashboard-card-primary .button-primary {
+	color: #fff !important;
+	background: var(--ck-orange) !important;
+	border-color: var(--ck-orange) !important;
+}
+
+.ck-dashboard-card-primary .button-primary:hover,
+.ck-dashboard-card-primary .button-primary:focus {
+	background: #d84b1c !important;
+	border-color: #d84b1c !important;
+}
 .ck-dashboard-card p:not(.ck-dashboard-card-kicker) {
 	min-height: 42px;
 	color: #72766f;
