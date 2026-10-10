@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 1.6.0
+ * Version: 1.7.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '1.6.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '1.7.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -195,20 +195,13 @@ function ck_admin_communal_update_footer( $text ) {
 add_filter( 'update_footer', 'ck_admin_communal_update_footer', 10, 1 );
 
 function ck_admin_communal_brand_admin_bar( $wp_admin_bar ) {
-	$site = $wp_admin_bar->get_node( 'site-name' );
-	if ( $site ) {
-		$site->title = 'Site WordPress';
-		$site->href  = home_url( '/' );
-		$wp_admin_bar->add_node( $site );
-	}
-
+	$wp_admin_bar->remove_node( 'site-name' );
 	$wp_admin_bar->add_node(
 		array(
-			'id'     => 'ck-portal-public',
-			'parent' => 'site-name',
-			'title'  => 'Portail public',
-			'href'   => ck_admin_communal_portal_url(),
-			'meta'   => array(
+			'id'    => 'ck-portal-public',
+			'title' => 'Portail public',
+			'href'  => ck_admin_communal_portal_url(),
+			'meta'  => array(
 				'target' => '_blank',
 				'rel'    => 'noopener',
 			),
