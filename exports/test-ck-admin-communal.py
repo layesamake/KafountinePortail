@@ -19,7 +19,7 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
-assert "Version: 1.8.0" in PLUGIN
+assert "Version: 1.9.0" in PLUGIN
 assert "ck_admin_communal_register_roles" in PLUGIN
 assert "register_activation_hook" in PLUGIN
 assert "add_role( 'ck_gestionnaire'" in PLUGIN
@@ -58,7 +58,11 @@ assert "'edit.php?post_type=ck_service'" in PLUGIN
 assert "post-new.php?post_type=ck_demarche" in PLUGIN
 assert "Nouvelle démarche" in PLUGIN
 assert "Nouveau document" in PLUGIN
-assert "Nouveau projet" in PLUGIN
+assert "ck_admin_communal_add_editorial_guidance" in PLUGIN
+assert "Guide de saisie communale" in PLUGIN
+assert "wp_insert_post_data" in PLUGIN
+assert "'pending'" in PLUGIN
+assert "Envoyer pour relecture" in PLUGIN
 
 with ZipFile(ARCHIVE) as archive:
     names = set(archive.namelist())

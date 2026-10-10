@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 1.8.0
+ * Version: 1.9.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '1.8.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '1.9.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -300,6 +300,69 @@ function ck_admin_communal_register_navigation_submenus() {
 	}
 }
 add_action( 'admin_menu', 'ck_admin_communal_register_navigation_submenus', 21 );
+
+function ck_admin_communal_editorial_post_types() {
+	return array_values(
+		array_filter(
+			array( 'ck_demarche', 'ck_document', 'ck_projet' ),
+			'post_type_exists'
+		)
+	);
+}
+
+function ck_admin_communal_add_editorial_guidance() {
+	foreach ( ck_admin_communal_editorial_post_types() as $post_type ) {
+		add_meta_box(
+			'ck-editorial-guide-' . $post_type,
+			'Guide de saisie communale',
+			'ck_admin_communal_render_editorial_guidance',
+			$post_type,
+			'side',
+			'high'
+		);
+	}
+}
+add_action( 'add_meta_boxes', 'ck_admin_communal_add_editorial_guidance' );
+
+function ck_admin_communal_render_editorial_guidance( $post ) {
+	$guidance = array(
+		'ck_demarche' => array(
+			'title' => 'Démarche administrative',
+			'items' => array( 'Titre compréhensible pour les citoyens', 'Pièces à fournir et conditions', 'Délais, coût et service responsable' ),
+		),
+		'ck_document' => array(
+			'title' => 'Document public',
+			'items' => array( 'Titre et catégorie du document', 'Date officielle et description', 'Fichier lisible et correctement nommé' ),
+		),
+		'ck_projet' => array(
+			'title' => 'Projet municipal',
+			'items' => array( 'Objectif et description du projet', 'Zone ou village concerné', 'État d’avancement et calendrier' ),
+		),
+	);
+	$current = $guidance[ $post->post_type ] ?? array( 'title' => 'Contenu communal', 'items' => array() );
+	?>
+	<p><strong><?php echo esc_html( $current['title'] ); ?></strong></p>
+	<ul>
+		<?php foreach ( $current['items'] as $item ) : ?>
+			<li>☐ <?php echo esc_html( $item ); ?></li>
+		<?php endforeach; ?>
+	</ul>
+	<p><em>Enregistrez en brouillon, puis utilisez « Envoyer pour relecture » lorsque les informations sont vérifiées.</em></p>
+	<?php
+}
+
+function ck_admin_communal_force_review_status( $data, $postarr ) {
+	if ( ck_admin_communal_is_technical_user() || ! in_array( $data['post_type'] ?? '', ck_admin_communal_editorial_post_types(), true ) ) {
+		return $data;
+	}
+
+	if ( 'publish' === ( $data['post_status'] ?? '' ) && ! current_user_can( 'publish_posts' ) ) {
+		$data['post_status'] = 'pending';
+	}
+
+	return $data;
+}
+add_filter( 'wp_insert_post_data', 'ck_admin_communal_force_review_status', 10, 2 );
 
 function ck_admin_communal_dashboard_counts() {
 	$zone_count = taxonomy_exists( 'ck_zone' ) ? wp_count_terms( array( 'taxonomy' => 'ck_zone', 'hide_empty' => false ) ) : 0;
