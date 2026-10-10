@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 2.4.0
+ * Version: 2.5.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '2.4.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '2.5.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -479,6 +479,7 @@ function ck_admin_communal_dashboard_counts() {
 		'alertes'     => 0,
 		'evenements'  => 0,
 		'pending'     => 0,
+		'drafts'      => 0,
 	);
 
 	$post_types = array(
@@ -501,7 +502,8 @@ function ck_admin_communal_dashboard_counts() {
 		}
 		$counts_for_type = wp_count_posts( $post_type );
 		$counts[ $key ] = (int) ( $counts_for_type->publish ?? 0 );
-		$counts['pending'] += (int) ( $counts_for_type->pending ?? 0 ) + (int) ( $counts_for_type->draft ?? 0 );
+		$counts['pending'] += (int) ( $counts_for_type->pending ?? 0 );
+		$counts['drafts'] += (int) ( $counts_for_type->draft ?? 0 );
 	}
 
 	return $counts;
@@ -534,6 +536,7 @@ function ck_admin_communal_navigation_page() {
 				array( 'label' => 'fiches villages', 'value' => $counts['zones'], 'url' => 'edit-tags.php?taxonomy=ck_zone' ),
 				array( 'label' => 'services municipaux', 'value' => $counts['services'], 'url' => 'edit.php?post_type=ck_service' ),
 				array( 'label' => 'contenus à relire', 'value' => $counts['pending'], 'url' => 'admin.php?page=ck-admin-communal-review' ),
+				array( 'label' => 'brouillons à préparer', 'value' => $counts['drafts'], 'url' => 'edit.php?post_status=draft' ),
 				array( 'label' => 'démarches', 'value' => $counts['demarches'], 'url' => 'edit.php?post_type=ck_demarche' ),
 				array( 'label' => 'documents publics', 'value' => $counts['documents'], 'url' => 'edit.php?post_type=ck_document' ),
 				array( 'label' => 'projets', 'value' => $counts['projets'], 'url' => 'edit.php?post_type=ck_projet' ),
@@ -559,7 +562,9 @@ function ck_admin_communal_navigation_page() {
 				<h2 id="ck-dashboard-review-title">À traiter en priorité</h2>
 				<p>Les contenus enregistrés en brouillon ou envoyés pour relecture apparaîtront ici.</p>
 				<?php if ( $counts['pending'] > 0 ) : ?>
-					<p class="ck-dashboard-review-status"><strong><?php echo esc_html( number_format_i18n( $counts['pending'] ) ); ?></strong> contenu(s) nécessitent votre attention.</p>
+					<p class="ck-dashboard-review-status"><strong><?php echo esc_html( number_format_i18n( $counts['pending'] ) ); ?></strong> contenu(s) sont en attente de relecture.</p>
+				<?php elseif ( $counts['drafts'] > 0 ) : ?>
+					<p class="ck-dashboard-review-status"><strong><?php echo esc_html( number_format_i18n( $counts['drafts'] ) ); ?></strong> brouillon(s) doivent encore être préparés.</p>
 				<?php else : ?>
 					<p class="ck-dashboard-review-status">Aucun contenu en attente pour le moment.</p>
 				<?php endif; ?>
