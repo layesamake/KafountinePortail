@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 1.3.0
+ * Version: 1.4.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '1.3.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '1.4.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -224,6 +224,37 @@ function ck_admin_communal_navigation_items() {
 		return $item['available'] && current_user_can( $item['capability'] );
 	} ) );
 }
+
+/**
+ * Open the communal dashboard instead of the generic WordPress dashboard.
+ * Technical administrators keep the native WordPress start page.
+ */
+function ck_admin_communal_redirect_to_home() {
+	if ( ! is_admin() || wp_doing_ajax() || ck_admin_communal_is_technical_user() ) {
+		return;
+	}
+
+	global $pagenow;
+	if ( 'index.php' !== $pagenow || ! current_user_can( 'read' ) ) {
+		return;
+	}
+
+	wp_safe_redirect( admin_url( 'admin.php?page=ck-admin-communal-home' ) );
+	exit;
+}
+add_action( 'admin_init', 'ck_admin_communal_redirect_to_home' );
+
+/**
+ * Send editorial profiles directly to the communal dashboard after login.
+ */
+function ck_admin_communal_login_redirect( $redirect_to, $requested_redirect_to, $user ) {
+	if ( is_wp_error( $user ) || ! $user || user_can( $user, 'manage_options' ) || user_can( $user, 'manage_network' ) ) {
+		return $redirect_to;
+	}
+
+	return admin_url( 'admin.php?page=ck-admin-communal-home' );
+}
+add_filter( 'login_redirect', 'ck_admin_communal_login_redirect', 10, 3 );
 
 function ck_admin_communal_navigation_menu() {
 	add_menu_page(
