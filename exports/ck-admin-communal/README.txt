@@ -9,6 +9,7 @@ Périmètre
 - navigation technique retirée du menu des profils métier au niveau de l’API WordPress, sans masquer CSS-only ;
 - structure d’accès « Accueil » avec les espaces communaux disponibles selon les capacités et les types de contenus présents ;
 - navigation métier regroupée sous « Accueil » pour les profils éditoriaux, avec les services, le territoire, les élus, les commissions, les agents, les démarches, les documents, les projets et la médiathèque ;
+- guide contextuel détaillé pour les démarches, documents et projets, avec sources, contacts, pièces et dates de vérification ;
 - file dédiée « À relire » regroupant les démarches, documents et projets en statut `pending` ;
 - liens séparés vers le site WordPress et le portail public depuis la barre d’administration ;
 - aucune modification des contenus, champs ACF, API REST ou données CMS.

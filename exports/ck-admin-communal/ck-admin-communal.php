@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 2.1.0
+ * Version: 2.2.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '2.1.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '2.2.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -362,15 +362,15 @@ function ck_admin_communal_render_editorial_guidance( $post ) {
 	$guidance = array(
 		'ck_demarche' => array(
 			'title' => 'Démarche administrative',
-			'items' => array( 'Titre compréhensible pour les citoyens', 'Pièces à fournir et conditions', 'Délais, coût et service responsable' ),
+			'items' => array( 'Titre compréhensible pour les citoyens', 'Description courte et public concerné', 'Pièces à fournir et conditions', 'Étapes, délais et coût', 'Service responsable, lieu et contact validé', 'Source officielle et date de vérification' ),
 		),
 		'ck_document' => array(
 			'title' => 'Document public',
-			'items' => array( 'Titre et catégorie du document', 'Date officielle et description', 'Fichier lisible et correctement nommé' ),
+			'items' => array( 'Titre et catégorie du document', 'Date officielle, année ou période', 'Description et service producteur', 'Fichier lisible, complet et correctement nommé', 'Référence ou source administrative' ),
 		),
 		'ck_projet' => array(
 			'title' => 'Projet municipal',
-			'items' => array( 'Objectif et description du projet', 'Zone ou village concerné', 'État d’avancement et calendrier' ),
+			'items' => array( 'Nom officiel et résumé', 'Objectif et description du projet', 'Zone ou village concerné', 'État d’avancement et calendrier', 'Maître d’ouvrage et budget si publiable', 'Documents justificatifs et date de mise à jour' ),
 		),
 	);
 	$current = $guidance[ $post->post_type ] ?? array( 'title' => 'Contenu communal', 'items' => array() );
