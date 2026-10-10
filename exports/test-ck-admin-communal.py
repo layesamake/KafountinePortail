@@ -13,6 +13,11 @@ assert "$wp_admin_bar->remove_node( 'wp-logo' );" in PLUGIN
 assert "'profile.php'" in PLUGIN
 assert "remove_submenu_page( 'profile.php'" not in PLUGIN
 assert "manage_options" in PLUGIN and "manage_network" in PLUGIN
+assert "register_rest_route" in PLUGIN
+assert "'/portal-settings'" in PLUGIN
+assert "permission_callback" in PLUGIN
+assert "'adresse'" in PLUGIN
+assert "'email', 'option'" in PLUGIN
 
 with ZipFile(ARCHIVE) as archive:
     names = set(archive.namelist())

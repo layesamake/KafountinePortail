@@ -168,10 +168,6 @@ const fallbackSettings: PortalSettings = {
   ],
 };
 
-export function getPortalSettings(): PortalSettings {
-  return fallbackSettings;
-}
-
 export function getCmsUrl(): string {
   return import.meta.env.CMS_URL || 'https://cms.communekafountine.com';
 }
@@ -193,6 +189,42 @@ async function fetchCmsJson<T>(path: string): Promise<T | null> {
   }
 
   return null;
+}
+
+interface PortalSettingsResponse {
+  denomination?: string;
+  presentation?: string;
+  region?: string;
+  departement?: string;
+  arrondissement?: string;
+  address?: string;
+  telephone?: string;
+  email?: string;
+  hours?: Array<{ day?: string; value?: string }>;
+}
+
+export async function getPortalSettings(): Promise<PortalSettings> {
+  const remote = await fetchCmsJson<PortalSettingsResponse>('/wp-json/ck/v1/portal-settings');
+  if (!remote) return fallbackSettings;
+
+  const hours = Array.isArray(remote.hours)
+    ? remote.hours
+        .filter((entry) => entry?.day && entry?.value)
+        .map((entry) => ({ day: entry.day as string, value: entry.value as string }))
+    : [];
+
+  return {
+    ...fallbackSettings,
+    denomination: remote.denomination?.trim() || fallbackSettings.denomination,
+    presentation: remote.presentation?.trim() || fallbackSettings.presentation,
+    region: remote.region?.trim() || fallbackSettings.region,
+    departement: remote.departement?.trim() || fallbackSettings.departement,
+    arrondissement: remote.arrondissement?.trim() || fallbackSettings.arrondissement,
+    address: remote.address?.trim() || fallbackSettings.address,
+    telephone: remote.telephone?.trim() || fallbackSettings.telephone,
+    email: remote.email?.trim() || fallbackSettings.email,
+    hours: hours.length > 0 ? hours : fallbackSettings.hours,
+  };
 }
 
 export async function getPortalServices(): Promise<PortalService[]> {
