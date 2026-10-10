@@ -5,6 +5,7 @@ from zipfile import ZipFile
 ROOT = Path(__file__).resolve().parent
 PACKAGE = ROOT / "ck-admin-communal"
 PLUGIN = (PACKAGE / "ck-admin-communal.php").read_text(encoding="utf-8")
+ADMIN_CSS = (PACKAGE / "assets/admin.css").read_text(encoding="utf-8")
 ARCHIVE = ROOT / "ck-admin-communal.zip"
 
 assert "add_filter( 'login_title'" in PLUGIN
@@ -30,6 +31,13 @@ assert "'delete_posts'      => false" in PLUGIN
 assert "'publish_posts'     => false" in PLUGIN
 assert "ck_admin_communal_roles_version" in PLUGIN
 assert "delete_option( 'ck_admin_communal_roles_version' )" in (PACKAGE / "uninstall.php").read_text(encoding="utf-8")
+assert "ck_admin_communal_dashboard_counts" in PLUGIN
+assert "ck-communal-dashboard" in PLUGIN
+assert "CONTENUS À PRÉPARER" in PLUGIN
+assert "Villages et zones" in PLUGIN
+assert ".ck-dashboard-hero" in ADMIN_CSS
+assert ".ck-dashboard-stats" in ADMIN_CSS
+assert ".ck-dashboard-card" in ADMIN_CSS
 
 with ZipFile(ARCHIVE) as archive:
     names = set(archive.namelist())
