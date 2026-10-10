@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 1.9.0
+ * Version: 2.0.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '1.9.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '2.0.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -37,14 +37,40 @@ function ck_admin_communal_register_roles() {
 	$role = get_role( 'ck_gestionnaire' );
 	if ( ! $role ) {
 		add_role( 'ck_gestionnaire', 'Gestionnaire communal', $capabilities );
-		return;
+	} else {
+		foreach ( $capabilities as $capability => $grant ) {
+			if ( $grant ) {
+				$role->add_cap( $capability );
+			} else {
+				$role->remove_cap( $capability );
+			}
+		}
 	}
 
-	foreach ( $capabilities as $capability => $grant ) {
-		if ( $grant ) {
-			$role->add_cap( $capability );
-		} else {
-			$role->remove_cap( $capability );
+	$editor_capabilities = array(
+		'read'             => true,
+		'edit_posts'       => true,
+		'edit_others_posts' => true,
+		'edit_published_posts' => true,
+		'publish_posts'     => true,
+		'delete_posts'      => false,
+		'delete_others_posts' => false,
+		'delete_published_posts' => false,
+		'upload_files'      => true,
+		'assign_categories' => true,
+		'manage_categories' => true,
+	);
+
+	$editor_role = get_role( 'ck_editeur' );
+	if ( ! $editor_role ) {
+		add_role( 'ck_editeur', 'Éditeur communal', $editor_capabilities );
+	} else {
+		foreach ( $editor_capabilities as $capability => $grant ) {
+			if ( $grant ) {
+				$editor_role->add_cap( $capability );
+			} else {
+				$editor_role->remove_cap( $capability );
+			}
 		}
 	}
 }

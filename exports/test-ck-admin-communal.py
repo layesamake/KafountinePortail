@@ -19,7 +19,7 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
-assert "Version: 1.9.0" in PLUGIN
+assert "Version: 2.0.0" in PLUGIN
 assert "ck_admin_communal_register_roles" in PLUGIN
 assert "register_activation_hook" in PLUGIN
 assert "add_role( 'ck_gestionnaire'" in PLUGIN
@@ -62,6 +62,10 @@ assert "ck_admin_communal_add_editorial_guidance" in PLUGIN
 assert "Guide de saisie communale" in PLUGIN
 assert "wp_insert_post_data" in PLUGIN
 assert "'pending'" in PLUGIN
+assert "add_role( 'ck_editeur'" in PLUGIN
+assert "Éditeur communal" in PLUGIN
+assert "'publish_posts'     => true" in PLUGIN
+assert "ck_editeur" in PLUGIN
 assert "Envoyer pour relecture" in PLUGIN
 
 with ZipFile(ARCHIVE) as archive:
