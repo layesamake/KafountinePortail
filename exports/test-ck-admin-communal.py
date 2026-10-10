@@ -19,7 +19,7 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
-assert "Version: 2.3.0" in PLUGIN
+assert "Version: 2.4.0" in PLUGIN
 assert "ck_admin_communal_register_roles" in PLUGIN
 assert "register_activation_hook" in PLUGIN
 assert "add_role( 'ck_gestionnaire'" in PLUGIN
@@ -70,6 +70,12 @@ assert "ck_session" in PLUGIN
 assert "ck_marche" in PLUGIN
 assert "ck_alerte" in PLUGIN
 assert "ck_evenement" in PLUGIN
+assert "'sessions'    => 0" in PLUGIN
+assert "'marches'     => 0" in PLUGIN
+assert "'alertes'     => 0" in PLUGIN
+assert "'evenements'  => 0" in PLUGIN
+assert "'label' => 'marchés publics'" in PLUGIN
+assert "'label' => 'alertes'" in PLUGIN
 assert "wp_insert_post_data" in PLUGIN
 assert "'pending'" in PLUGIN
 assert "add_role( 'ck_editeur'" in PLUGIN

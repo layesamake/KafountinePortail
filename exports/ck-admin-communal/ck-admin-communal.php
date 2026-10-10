@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 2.3.0
+ * Version: 2.4.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '2.3.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '2.4.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -474,6 +474,10 @@ function ck_admin_communal_dashboard_counts() {
 		'demarches'   => 0,
 		'documents'   => 0,
 		'projets'     => 0,
+		'sessions'    => 0,
+		'marches'     => 0,
+		'alertes'     => 0,
+		'evenements'  => 0,
 		'pending'     => 0,
 	);
 
@@ -485,6 +489,10 @@ function ck_admin_communal_dashboard_counts() {
 		'demarches'   => 'ck_demarche',
 		'documents'   => 'ck_document',
 		'projets'     => 'ck_projet',
+		'sessions'    => 'ck_session',
+		'marches'     => 'ck_marche',
+		'alertes'     => 'ck_alerte',
+		'evenements'  => 'ck_evenement',
 	);
 
 	foreach ( $post_types as $key => $post_type ) {
@@ -526,7 +534,13 @@ function ck_admin_communal_navigation_page() {
 				array( 'label' => 'fiches villages', 'value' => $counts['zones'], 'url' => 'edit-tags.php?taxonomy=ck_zone' ),
 				array( 'label' => 'services municipaux', 'value' => $counts['services'], 'url' => 'edit.php?post_type=ck_service' ),
 				array( 'label' => 'contenus à relire', 'value' => $counts['pending'], 'url' => 'admin.php?page=ck-admin-communal-review' ),
+				array( 'label' => 'démarches', 'value' => $counts['demarches'], 'url' => 'edit.php?post_type=ck_demarche' ),
 				array( 'label' => 'documents publics', 'value' => $counts['documents'], 'url' => 'edit.php?post_type=ck_document' ),
+				array( 'label' => 'projets', 'value' => $counts['projets'], 'url' => 'edit.php?post_type=ck_projet' ),
+				array( 'label' => 'sessions du conseil', 'value' => $counts['sessions'], 'url' => 'edit.php?post_type=ck_session' ),
+				array( 'label' => 'marchés publics', 'value' => $counts['marches'], 'url' => 'edit.php?post_type=ck_marche' ),
+				array( 'label' => 'alertes', 'value' => $counts['alertes'], 'url' => 'edit.php?post_type=ck_alerte' ),
+				array( 'label' => 'événements', 'value' => $counts['evenements'], 'url' => 'edit.php?post_type=ck_evenement' ),
 			);
 			foreach ( $stats as $stat ) :
 				?>
