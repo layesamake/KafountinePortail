@@ -72,11 +72,11 @@ const [services, agents] = await Promise.all([
       {agents.length > 0 ? (
         <div class="member-grid">
           {agents.map((agent, index) => (
-            <article class="member-card">
+            <a class="member-card" href={`/mairie/agents/${agent.slug}/`}>
               <span class="member-number">{String(index + 1).padStart(2, '0')}</span>
               <h3 set:html={agent.title.rendered}></h3>
               <p>Agent ou responsable municipal</p>
-            </article>
+            </a>
           ))}
         </div>
       ) : (

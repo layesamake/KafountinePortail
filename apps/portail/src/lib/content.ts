@@ -275,8 +275,9 @@ function searchText(value: { rendered: string }): string {
 }
 
 export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
-  const [services, members, commissions, sessions, zones, projects, markets, demarches, events, alerts, documents] = await Promise.all([
+  const [services, agents, members, commissions, sessions, zones, projects, markets, demarches, events, alerts, documents] = await Promise.all([
     getPortalServices(),
+    getPortalAgents(),
     getPortalCouncilMembers(),
     getPortalCommissions(),
     getPortalSessions(),
@@ -295,6 +296,12 @@ export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
       excerpt: searchText(service.excerpt) || searchText(service.content),
       type: 'Service municipal',
       href: `/services/${service.slug}/`,
+    })),
+    ...agents.map((agent) => ({
+      title: searchText(agent.title),
+      excerpt: searchText(agent.excerpt) || searchText(agent.content),
+      type: 'Agent municipal',
+      href: `/mairie/agents/${agent.slug}/`,
     })),
     ...members.map((member) => ({
       title: searchText(member.title),

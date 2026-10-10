@@ -1,0 +1,29 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPortalAgents } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const agents = await getPortalAgents();
+  return agents.map((agent) => ({
+    params: { slug: agent.slug },
+    props: { agent },
+  }));
+}
+
+const { agent } = Astro.props;
+---
+<Base title={agent.title.rendered} description={`Fiche de l’agent municipal ${agent.title.rendered}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">AGENT MUNICIPAL</p>
+      <h1 set:html={agent.title.rendered}></h1>
+      <p>Agent ou responsable de l’administration communale de Kafountine.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={agent.content.rendered}></article>
+      <a class="button button-secondary" href="/mairie/">← Retour à la mairie</a>
+    </div>
+  </section>
+</Base>

@@ -36,6 +36,19 @@ test('la page mairie présente les informations institutionnelles', async ({ pag
   await expect(page.getByRole('heading', { name: /Coordonnées et horaires/i })).toBeVisible();
 });
 
+test('la page mairie relie les agents à leurs fiches individuelles', async ({ page }) => {
+  await page.goto('/mairie/');
+
+  await expect(page.locator('a.member-card').filter({ hasText: 'Mamadou Lamine DIEME' })).toHaveAttribute('href', '/mairie/agents/mamadou-lamine-dieme/');
+});
+
+test('la fiche individuelle d’un agent municipal est accessible', async ({ page }) => {
+  await page.goto('/mairie/agents/mamadou-lamine-dieme/');
+
+  await expect(page.getByRole('heading', { name: 'Mamadou Lamine DIEME', exact: true })).toBeVisible();
+  await expect(page.getByText(/AGENT MUNICIPAL/i)).toBeVisible();
+});
+
 test('la page du conseil affiche les élus et commissions du CMS', async ({ page }) => {
   await page.goto('/conseil/');
 
