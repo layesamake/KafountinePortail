@@ -1,0 +1,89 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPortalMarkets, getPortalZones } from '../../../lib/content';
+
+const [markets, zones] = await Promise.all([
+  getPortalMarkets(),
+  getPortalZones(),
+]);
+const zoneNames = new Map(zones.map((zone) => [zone.id, zone.name]));
+const populatedZones = zones.filter((zone) => zone.count > 0);
+
+function formatDate(value: string): string {
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+  if (!year || !month || !day) return 'Date non renseignée';
+  return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(year, month - 1, day));
+}
+---
+<Base title="Marchés publics" description="Consultez les marchés publics publiés par la commune de Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">TRANSPARENCE</p>
+      <h1>Marchés publics</h1>
+      <p>Retrouvez les avis, consultations et informations relatives aux marchés publics rendus publics par la commune.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">COMMANDE PUBLIQUE</p><h2>Marchés publiés</h2></div>
+        <span class="text-link">{markets.length} marchés publiés</span>
+      </div>
+      <div class="filter-form document-filters">
+        <div>
+          <label for="market-zone-filter">Filtrer par village ou zone</label>
+          <select id="market-zone-filter" name="zone">
+            <option value="">Tous les villages et zones</option>
+            {populatedZones.map((zone) => <option value={zone.id}>{zone.name}</option>)}
+          </select>
+        </div>
+      </div>
+      {markets.length > 0 ? (
+        <>
+          <div class="document-grid" id="market-results">
+            {markets.map((market, index) => {
+              const marketZoneIds = market.ck_zone ?? [];
+              const locations = marketZoneIds.map((id) => zoneNames.get(id)).filter(Boolean).join(' · ');
+              return (
+                <article class="document-card" data-zones={marketZoneIds.join(',')}>
+                  <span class="document-number">{String(index + 1).padStart(2, '0')}</span>
+                  <p class="card-label">Marché public</p>
+                  <h3 set:html={market.title.rendered}></h3>
+                  <p class="document-meta">{formatDate(market.date)}{locations ? ` · ${locations}` : ''}</p>
+                  <div class="cms-content" set:html={market.excerpt.rendered || market.content.rendered}></div>
+                  <a class="text-link" href={market.link} target="_blank" rel="noreferrer">Consulter l’avis <span aria-hidden="true">↗</span></a>
+                </article>
+              );
+            })}
+          </div>
+          <div class="empty-state" id="market-filter-empty" hidden>
+            <h2>Aucun marché ne correspond à ce filtre.</h2>
+            <p>Modifiez le village ou la zone sélectionnée.</p>
+          </div>
+        </>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-state-number">En attente de publication</span>
+          <h2>Aucun marché public n’est encore publié.</h2>
+          <p>Les avis validés par la commune apparaîtront ici après leur mise en ligne.</p>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>
+<script>
+  const zoneFilter = document.querySelector('#market-zone-filter') as HTMLSelectElement | null;
+  const cards = [...document.querySelectorAll<HTMLElement>('#market-results [data-zones]')];
+  const empty = document.querySelector('#market-filter-empty');
+  zoneFilter?.addEventListener('change', () => {
+    const selected = zoneFilter.value;
+    let visible = 0;
+    cards.forEach((card) => {
+      const zones = card.dataset.zones?.split(',').filter(Boolean) ?? [];
+      const matches = !selected || zones.includes(selected);
+      card.hidden = !matches;
+      if (matches) visible += 1;
+    });
+    empty?.toggleAttribute('hidden', visible > 0);
+  });
+</script>

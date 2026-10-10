@@ -50,6 +50,17 @@ export interface PortalProject {
   ck_zone?: number[];
 }
 
+export interface PortalMarket {
+  id: number;
+  date: string;
+  slug: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+  link: string;
+  ck_zone?: number[];
+}
+
 export interface PortalEvent {
   id: number;
   slug: string;
@@ -208,6 +219,11 @@ export async function getPortalProjects(): Promise<PortalProject[]> {
   return Array.isArray(projects) ? projects : [];
 }
 
+export async function getPortalMarkets(): Promise<PortalMarket[]> {
+  const markets = await fetchCmsJson<PortalMarket[]>('/wp-json/wp/v2/ck_marche?per_page=100&orderby=date&order=desc');
+  return Array.isArray(markets) ? markets : [];
+}
+
 export async function getPortalEvents(): Promise<PortalEvent[]> {
   const events = await fetchCmsJson<PortalEvent[]>('/wp-json/wp/v2/ck_evenement?per_page=100&orderby=date&order=asc');
   return Array.isArray(events) ? events : [];
@@ -259,13 +275,14 @@ function searchText(value: { rendered: string }): string {
 }
 
 export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
-  const [services, members, commissions, sessions, zones, projects, demarches, events, alerts, documents] = await Promise.all([
+  const [services, members, commissions, sessions, zones, projects, markets, demarches, events, alerts, documents] = await Promise.all([
     getPortalServices(),
     getPortalCouncilMembers(),
     getPortalCommissions(),
     getPortalSessions(),
     getPortalZones(),
     getPortalProjects(),
+    getPortalMarkets(),
     getPortalDemarches(),
     getPortalEvents(),
     getPortalAlerts(),
@@ -308,6 +325,12 @@ export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
       excerpt: searchText(project.excerpt) || searchText(project.content),
       type: 'Projet municipal',
       href: `/projets/${project.slug}/`,
+    })),
+    ...markets.map((market) => ({
+      title: searchText(market.title),
+      excerpt: searchText(market.excerpt) || searchText(market.content),
+      type: 'Marché public',
+      href: `/transparence/marches/${market.slug}/`,
     })),
     ...demarches.map((demarche) => ({
       title: searchText(demarche.title),
