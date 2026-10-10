@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 1.5.0
+ * Version: 1.6.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '1.5.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '1.6.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -283,6 +283,28 @@ function ck_admin_communal_navigation_menu() {
 }
 add_action( 'admin_menu', 'ck_admin_communal_navigation_menu', 20 );
 
+function ck_admin_communal_register_navigation_submenus() {
+	$items = array(
+		array( 'title' => 'Services aux citoyens', 'menu' => 'Services', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_service', 'available' => post_type_exists( 'ck_service' ) ),
+		array( 'title' => 'Territoire communal', 'menu' => 'Territoire', 'capability' => 'manage_categories', 'slug' => 'edit-tags.php?taxonomy=ck_zone', 'available' => taxonomy_exists( 'ck_zone' ) ),
+		array( 'title' => 'Élus et conseil', 'menu' => 'Élus', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_elu', 'available' => post_type_exists( 'ck_elu' ) ),
+		array( 'title' => 'Commissions', 'menu' => 'Commissions', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_commission', 'available' => post_type_exists( 'ck_commission' ) ),
+		array( 'title' => 'Agents communaux', 'menu' => 'Agents', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_agent', 'available' => post_type_exists( 'ck_agent' ) ),
+		array( 'title' => 'Démarches administratives', 'menu' => 'Démarches', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_demarche', 'available' => post_type_exists( 'ck_demarche' ) ),
+		array( 'title' => 'Documents publics', 'menu' => 'Documents', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_document', 'available' => post_type_exists( 'ck_document' ) ),
+		array( 'title' => 'Projets et transparence', 'menu' => 'Projets', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_projet', 'available' => post_type_exists( 'ck_projet' ) ),
+		array( 'title' => 'Médiathèque', 'menu' => 'Médiathèque', 'capability' => 'upload_files', 'slug' => 'upload.php', 'available' => true ),
+		array( 'title' => 'Mon profil', 'menu' => 'Mon profil', 'capability' => 'read', 'slug' => 'profile.php', 'available' => true ),
+	);
+
+	foreach ( $items as $item ) {
+		if ( $item['available'] && current_user_can( $item['capability'] ) ) {
+			add_submenu_page( 'ck-admin-communal-home', $item['title'], $item['menu'], $item['capability'], $item['slug'] );
+		}
+	}
+}
+add_action( 'admin_menu', 'ck_admin_communal_register_navigation_submenus', 21 );
+
 function ck_admin_communal_dashboard_counts() {
 	$zone_count = taxonomy_exists( 'ck_zone' ) ? wp_count_terms( array( 'taxonomy' => 'ck_zone', 'hide_empty' => false ) ) : 0;
 	$counts = array(
@@ -441,6 +463,20 @@ function ck_admin_communal_restrict_business_navigation() {
 		'update-core.php',
 	);
 	foreach ( $technical_menus as $menu_slug ) {
+		remove_menu_page( $menu_slug );
+	}
+
+	$business_duplicate_menus = array(
+		'edit.php?post_type=ck_service',
+		'edit.php?post_type=ck_elu',
+		'edit.php?post_type=ck_commission',
+		'edit.php?post_type=ck_agent',
+		'edit.php?post_type=ck_demarche',
+		'edit.php?post_type=ck_document',
+		'edit.php?post_type=ck_projet',
+		'upload.php',
+	);
+	foreach ( $business_duplicate_menus as $menu_slug ) {
 		remove_menu_page( $menu_slug );
 	}
 
