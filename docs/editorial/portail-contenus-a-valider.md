@@ -43,3 +43,7 @@ Le portail Astro reste statique : toute publication WordPress nécessite un nouv
 8. enrichissement des villages et services.
 
 Aucun village autonome ne doit être créé : les villages restent les termes de la taxonomie `ck_zone`.
+
+## Guide de saisie du premier lot
+
+Le détail opérationnel de saisie et de validation est documenté dans [`portail-lot-1-saisie-validation.md`](./portail-lot-1-saisie-validation.md).
