@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '2.0.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '2.1.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -305,6 +305,7 @@ add_action( 'admin_menu', 'ck_admin_communal_navigation_menu', 20 );
 function ck_admin_communal_register_navigation_submenus() {
 	$items = array(
 		array( 'title' => 'Services aux citoyens', 'menu' => 'Services', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_service', 'available' => post_type_exists( 'ck_service' ) ),
+		array( 'title' => 'Contenus à relire', 'menu' => 'À relire', 'capability' => 'edit_posts', 'slug' => 'ck-admin-communal-review', 'callback' => 'ck_admin_communal_review_page', 'available' => true ),
 		array( 'title' => 'Territoire communal', 'menu' => 'Territoire', 'capability' => 'manage_categories', 'slug' => 'edit-tags.php?taxonomy=ck_zone', 'available' => taxonomy_exists( 'ck_zone' ) ),
 		array( 'title' => 'Élus et conseil', 'menu' => 'Élus', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_elu', 'available' => post_type_exists( 'ck_elu' ) ),
 		array( 'title' => 'Commissions', 'menu' => 'Commissions', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_commission', 'available' => post_type_exists( 'ck_commission' ) ),
@@ -321,7 +322,14 @@ function ck_admin_communal_register_navigation_submenus() {
 
 	foreach ( $items as $item ) {
 		if ( $item['available'] && current_user_can( $item['capability'] ) ) {
-			add_submenu_page( 'ck-admin-communal-home', $item['title'], $item['menu'], $item['capability'], $item['slug'] );
+			add_submenu_page(
+				'ck-admin-communal-home',
+				$item['title'],
+				$item['menu'],
+				$item['capability'],
+				$item['slug'],
+				$item['callback'] ?? null
+			);
 		}
 	}
 }
@@ -390,6 +398,51 @@ function ck_admin_communal_force_review_status( $data, $postarr ) {
 }
 add_filter( 'wp_insert_post_data', 'ck_admin_communal_force_review_status', 10, 2 );
 
+function ck_admin_communal_review_page() {
+	$review_items = array();
+	foreach ( ck_admin_communal_editorial_post_types() as $post_type ) {
+		$review_items = array_merge(
+			$review_items,
+			get_posts(
+				array(
+					'post_type'      => $post_type,
+					'post_status'    => 'pending',
+					'posts_per_page' => 50,
+					'orderby'        => 'date',
+					'order'          => 'DESC',
+				)
+			)
+		);
+	}
+	usort( $review_items, function ( $left, $right ) {
+		return strtotime( $right->post_date ) <=> strtotime( $left->post_date );
+	} );
+	?>
+	<div class="wrap ck-communal-review" id="ck-admin-communal-review">
+		<h1>À relire</h1>
+		<p>Relisez les contenus transmis par les gestionnaires avant leur publication sur le portail public.</p>
+		<?php if ( empty( $review_items ) ) : ?>
+			<div class="notice notice-info inline"><p>Aucun contenu n’est actuellement en attente de relecture.</p></div>
+		<?php else : ?>
+			<table class="widefat fixed striped">
+				<thead><tr><th>Contenu</th><th>Type</th><th>Date</th><th>Action</th></tr></thead>
+				<tbody>
+					<?php foreach ( $review_items as $item ) : ?>
+						<?php $type_object = get_post_type_object( $item->post_type ); ?>
+						<tr>
+							<td><strong><?php echo esc_html( get_the_title( $item ) ?: '(Sans titre)' ); ?></strong></td>
+							<td><?php echo esc_html( $type_object ? $type_object->labels->singular_name : $item->post_type ); ?></td>
+							<td><?php echo esc_html( get_the_date( get_option( 'date_format' ), $item ) ); ?></td>
+							<td><a class="button button-secondary" href="<?php echo esc_url( get_edit_post_link( $item->ID, '' ) ); ?>">Ouvrir la fiche</a></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
+	</div>
+	<?php
+}
+
 function ck_admin_communal_dashboard_counts() {
 	$zone_count = taxonomy_exists( 'ck_zone' ) ? wp_count_terms( array( 'taxonomy' => 'ck_zone', 'hide_empty' => false ) ) : 0;
 	$counts = array(
@@ -452,7 +505,7 @@ function ck_admin_communal_navigation_page() {
 			$stats = array(
 				array( 'label' => 'fiches villages', 'value' => $counts['zones'], 'url' => 'edit-tags.php?taxonomy=ck_zone' ),
 				array( 'label' => 'services municipaux', 'value' => $counts['services'], 'url' => 'edit.php?post_type=ck_service' ),
-				array( 'label' => 'contenus à relire', 'value' => $counts['pending'], 'url' => 'edit.php?post_status=pending' ),
+				array( 'label' => 'contenus à relire', 'value' => $counts['pending'], 'url' => 'admin.php?page=ck-admin-communal-review' ),
 				array( 'label' => 'documents publics', 'value' => $counts['documents'], 'url' => 'edit.php?post_type=ck_document' ),
 			);
 			foreach ( $stats as $stat ) :
@@ -478,7 +531,7 @@ function ck_admin_communal_navigation_page() {
 				<?php endif; ?>
 			</div>
 			<?php if ( $counts['pending'] > 0 && current_user_can( 'edit_posts' ) ) : ?>
-				<?php echo ck_admin_communal_dashboard_link( 'Ouvrir les contenus à relire', 'edit.php?post_status=pending', 'button button-primary' ); ?>
+				<?php echo ck_admin_communal_dashboard_link( 'Ouvrir les contenus à relire', 'admin.php?page=ck-admin-communal-review', 'button button-primary' ); ?>
 			<?php endif; ?>
 		</section>
 

@@ -19,7 +19,7 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
-assert "Version: 2.0.0" in PLUGIN
+assert "Version: 2.1.0" in PLUGIN
 assert "ck_admin_communal_register_roles" in PLUGIN
 assert "register_activation_hook" in PLUGIN
 assert "add_role( 'ck_gestionnaire'" in PLUGIN
@@ -65,8 +65,14 @@ assert "'pending'" in PLUGIN
 assert "add_role( 'ck_editeur'" in PLUGIN
 assert "Éditeur communal" in PLUGIN
 assert "'publish_posts'     => true" in PLUGIN
-assert "ck_editeur" in PLUGIN
-assert "Envoyer pour relecture" in PLUGIN
+assert "ck_admin_communal_review_page" in PLUGIN
+assert "ck-admin-communal-review" in PLUGIN
+assert "À relire" in PLUGIN
+assert "post_status'    => 'pending'" in PLUGIN
+assert "'callback' => 'ck_admin_communal_review_page'" in PLUGIN
+assert "get_posts(" in PLUGIN
+assert "Ouvrir la fiche" in PLUGIN
+assert "admin.php?page=ck-admin-communal-review" in PLUGIN
 
 with ZipFile(ARCHIVE) as archive:
     names = set(archive.namelist())
