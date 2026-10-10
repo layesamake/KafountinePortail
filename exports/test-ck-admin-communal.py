@@ -41,8 +41,10 @@ assert ".ck-dashboard-card" in ADMIN_CSS
 assert "ck-dashboard-review" in PLUGIN
 assert "À traiter en priorité" in PLUGIN
 assert "ck-dashboard-quick-actions" in PLUGIN
-assert ".ck-dashboard-review" in ADMIN_CSS
 assert ".ck-dashboard-quick-actions" in ADMIN_CSS
+assert ".ck-dashboard-review" in ADMIN_CSS
+assert ".ck-dashboard-card-primary h2" in ADMIN_CSS
+assert ".ck-dashboard-card-primary .button-secondary" in ADMIN_CSS
 
 with ZipFile(ARCHIVE) as archive:
     names = set(archive.namelist())
