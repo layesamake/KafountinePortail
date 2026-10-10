@@ -21,8 +21,10 @@ const expectedTaxonomies = [
 ];
 
 async function getJson(path) {
-  const response = await fetch(`${cmsUrl}${path}`, {
-    headers: { accept: 'application/json' },
+  const url = new URL(`${cmsUrl}${path}`);
+  url.searchParams.set('_portal_check', Date.now().toString());
+  const response = await fetch(url, {
+    headers: { accept: 'application/json', 'cache-control': 'no-cache' },
     signal: AbortSignal.timeout(15_000),
   });
   if (!response.ok) {
