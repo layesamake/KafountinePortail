@@ -1,7 +1,28 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SectionPlaceholder from '../../components/SectionPlaceholder.astro';
 ---
-<Base title="Transparence">
-  <SectionPlaceholder eyebrow="TRANSPARENCE" title="Documents et informations publiques" description="Accédez aux documents officiels et aux informations de transparence publiés par la commune." href="/transparence/documents/" linkLabel="Voir les documents" />
+<Base title="Transparence" description="Documents, marchés publics et informations publiques de la commune de Kafountine.">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">TRANSPARENCE</p>
+      <h1>Documents et informations publiques</h1>
+      <p>Accédez aux documents officiels, marchés publics et ressources de transparence publiés par la commune.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="action-grid">
+        <a class="action-card" href="/transparence/documents/">
+          <span class="action-number">01</span>
+          <span class="action-content"><strong>Documents publics</strong><span>Actes, rapports, plans et ressources officielles.</span></span>
+          <span class="action-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="action-card" href="/transparence/marches/">
+          <span class="action-number">02</span>
+          <span class="action-content"><strong>Marchés publics</strong><span>Avis et informations relatives à la commande publique.</span></span>
+          <span class="action-arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </section>
 </Base>

@@ -1,0 +1,33 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPortalMarkets } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const markets = await getPortalMarkets();
+  return markets.map((market) => ({
+    params: { slug: market.slug },
+    props: { market },
+  }));
+}
+
+const { market } = Astro.props;
+const [year, month, day] = market.date.slice(0, 10).split('-').map(Number);
+const date = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(year, month - 1, day));
+---
+<Base title={market.title.rendered} description={`Marché public : ${market.title.rendered}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">MARCHÉ PUBLIC</p>
+      <h1 set:html={market.title.rendered}></h1>
+      <p>{date}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={market.content.rendered}></article>
+      <a class="button button-primary" href={market.link} target="_blank" rel="noreferrer">Consulter l’avis officiel ↗</a>
+      <br />
+      <a class="button button-secondary" href="/transparence/marches/">← Retour aux marchés publics</a>
+    </div>
+  </section>
+</Base>

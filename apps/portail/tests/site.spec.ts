@@ -103,6 +103,13 @@ test('la page des documents publics est reliée au CMS', async ({ page }) => {
   await expect(page.getByLabel(/Filtrer par village ou zone/i)).toBeVisible();
 });
 
+test('la page des marchés publics est reliée au CMS', async ({ page }) => {
+  await page.goto('/transparence/marches/');
+
+  await expect(page.getByRole('heading', { name: 'Marchés publics', exact: true })).toBeVisible();
+  await expect(page.getByText(/0 marchés publiés/i)).toBeVisible();
+});
+
 test('la recherche globale filtre les contenus publiés', async ({ page }) => {
   await page.goto('/recherche/');
 
