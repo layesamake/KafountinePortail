@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 2.2.0
+ * Version: 2.3.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '2.2.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '2.3.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -313,6 +313,10 @@ function ck_admin_communal_register_navigation_submenus() {
 		array( 'title' => 'Démarches administratives', 'menu' => 'Démarches', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_demarche', 'available' => post_type_exists( 'ck_demarche' ) ),
 		array( 'title' => 'Documents publics', 'menu' => 'Documents', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_document', 'available' => post_type_exists( 'ck_document' ) ),
 		array( 'title' => 'Projets et transparence', 'menu' => 'Projets', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_projet', 'available' => post_type_exists( 'ck_projet' ) ),
+		array( 'title' => 'Sessions du conseil', 'menu' => 'Sessions', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_session', 'available' => post_type_exists( 'ck_session' ) ),
+		array( 'title' => 'Marchés publics', 'menu' => 'Marchés', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_marche', 'available' => post_type_exists( 'ck_marche' ) ),
+		array( 'title' => 'Alertes municipales', 'menu' => 'Alertes', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_alerte', 'available' => post_type_exists( 'ck_alerte' ) ),
+		array( 'title' => 'Événements institutionnels', 'menu' => 'Événements', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_evenement', 'available' => post_type_exists( 'ck_evenement' ) ),
 		array( 'title' => 'Nouvelle démarche', 'menu' => 'Ajouter une démarche', 'capability' => 'edit_posts', 'slug' => 'post-new.php?post_type=ck_demarche', 'available' => post_type_exists( 'ck_demarche' ) ),
 		array( 'title' => 'Nouveau document', 'menu' => 'Ajouter un document', 'capability' => 'edit_posts', 'slug' => 'post-new.php?post_type=ck_document', 'available' => post_type_exists( 'ck_document' ) ),
 		array( 'title' => 'Nouveau projet', 'menu' => 'Ajouter un projet', 'capability' => 'edit_posts', 'slug' => 'post-new.php?post_type=ck_projet', 'available' => post_type_exists( 'ck_projet' ) ),
@@ -338,7 +342,7 @@ add_action( 'admin_menu', 'ck_admin_communal_register_navigation_submenus', 21 )
 function ck_admin_communal_editorial_post_types() {
 	return array_values(
 		array_filter(
-			array( 'ck_demarche', 'ck_document', 'ck_projet' ),
+			array( 'ck_demarche', 'ck_document', 'ck_projet', 'ck_session', 'ck_marche', 'ck_alerte', 'ck_evenement' ),
 			'post_type_exists'
 		)
 	);
@@ -371,6 +375,22 @@ function ck_admin_communal_render_editorial_guidance( $post ) {
 		'ck_projet' => array(
 			'title' => 'Projet municipal',
 			'items' => array( 'Nom officiel et résumé', 'Objectif et description du projet', 'Zone ou village concerné', 'État d’avancement et calendrier', 'Maître d’ouvrage et budget si publiable', 'Documents justificatifs et date de mise à jour' ),
+		),
+		'ck_session' => array(
+			'title' => 'Session du conseil',
+			'items' => array( 'Date et intitulé officiel', 'Ordre du jour ou objet', 'Lieu ou modalité de la session', 'Document ou procès-verbal validé', 'Source et date de publication' ),
+		),
+		'ck_marche' => array(
+			'title' => 'Marché public',
+			'items' => array( 'Objet officiel du marché', 'Référence et procédure', 'Montant et calendrier si publiables', 'Attributaire ou état de la procédure', 'Pièces et source administrative' ),
+		),
+		'ck_alerte' => array(
+			'title' => 'Alerte municipale',
+			'items' => array( 'Titre explicite et niveau d’urgence', 'Zone ou public concerné', 'Message et consigne officielle', 'Date de début et de fin', 'Service émetteur et contact validé' ),
+		),
+		'ck_evenement' => array(
+			'title' => 'Événement institutionnel',
+			'items' => array( 'Intitulé et description', 'Date, heure et lieu', 'Public concerné', 'Organisateur et contact validé', 'Source et visuel autorisé' ),
 		),
 	);
 	$current = $guidance[ $post->post_type ] ?? array( 'title' => 'Contenu communal', 'items' => array() );
