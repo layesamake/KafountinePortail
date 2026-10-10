@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 1.0.0
+ * Version: 1.2.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,9 +11,55 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '1.1.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '1.2.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
+
+/**
+ * Register the least-privileged editorial role used for communal data entry.
+ * The role can prepare and submit content, but cannot publish or delete it.
+ */
+function ck_admin_communal_register_roles() {
+	$capabilities = array(
+		'read'             => true,
+		'edit_posts'       => true,
+		'edit_others_posts' => true,
+		'edit_published_posts' => false,
+		'publish_posts'     => false,
+		'delete_posts'      => false,
+		'delete_others_posts' => false,
+		'delete_published_posts' => false,
+		'upload_files'      => true,
+		'assign_categories' => true,
+		'manage_categories' => true,
+	);
+
+	$role = get_role( 'ck_gestionnaire' );
+	if ( ! $role ) {
+		add_role( 'ck_gestionnaire', 'Gestionnaire communal', $capabilities );
+		return;
+	}
+
+	foreach ( $capabilities as $capability => $grant ) {
+		if ( $grant ) {
+			$role->add_cap( $capability );
+		} else {
+			$role->remove_cap( $capability );
+		}
+	}
+}
+register_activation_hook( __FILE__, 'ck_admin_communal_register_roles' );
+
+/**
+ * Keep the role synchronized after plugin updates without changing users.
+ */
+function ck_admin_communal_sync_roles() {
+	if ( get_option( 'ck_admin_communal_roles_version' ) !== CK_ADMIN_COMMUNAL_VERSION ) {
+		ck_admin_communal_register_roles();
+		update_option( 'ck_admin_communal_roles_version', CK_ADMIN_COMMUNAL_VERSION, false );
+	}
+}
+add_action( 'plugins_loaded', 'ck_admin_communal_sync_roles' );
 
 /**
  * Expose only the public municipal settings consumed by the static portal.

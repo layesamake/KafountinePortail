@@ -18,6 +18,18 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
+assert "Version: 1.2.0" in PLUGIN
+assert "ck_admin_communal_register_roles" in PLUGIN
+assert "register_activation_hook" in PLUGIN
+assert "add_role( 'ck_gestionnaire'" in PLUGIN
+assert "Gestionnaire communal" in PLUGIN
+assert "'edit_posts'" in PLUGIN
+assert "'upload_files'" in PLUGIN
+assert "'manage_categories'" in PLUGIN
+assert "'delete_posts'      => false" in PLUGIN
+assert "'publish_posts'     => false" in PLUGIN
+assert "ck_admin_communal_roles_version" in PLUGIN
+assert "delete_option( 'ck_admin_communal_roles_version' )" in (PACKAGE / "uninstall.php").read_text(encoding="utf-8")
 
 with ZipFile(ARCHIVE) as archive:
     names = set(archive.namelist())
