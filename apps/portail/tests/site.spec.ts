@@ -11,6 +11,14 @@ test('accueil institutionnel expose les actions prioritaires', async ({ page }) 
   await expect(page.getByRole('link', { name: 'Conseil municipal', exact: true })).toBeVisible();
 });
 
+test('la page 404 propose un retour vers le portail', async ({ page }) => {
+  const response = await page.goto('/route-inexistante/');
+
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole('heading', { name: /Cette page n’existe pas/i })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Retour à l’accueil/i })).toHaveAttribute('href', '/');
+});
+
 test('le menu mobile s’ouvre et expose la navigation principale', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
