@@ -177,16 +177,22 @@ export function getCmsUrl(): string {
 }
 
 async function fetchCmsJson<T>(path: string): Promise<T | null> {
-  try {
-    const response = await fetch(`${getCmsUrl()}${path}`, {
-      headers: { accept: 'application/json' },
-      signal: AbortSignal.timeout(8_000),
-    });
-    if (!response.ok) return null;
-    return (await response.json()) as T;
-  } catch {
-    return null;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const url = new URL(`${getCmsUrl()}${path}`);
+      url.searchParams.set('_portal_fetch', `${Date.now()}-${attempt}`);
+      const response = await fetch(url, {
+        headers: { accept: 'application/json', 'cache-control': 'no-cache' },
+        signal: AbortSignal.timeout(12_000),
+      });
+      if (!response.ok) return null;
+      return (await response.json()) as T;
+    } catch {
+      if (attempt === 3) return null;
+    }
   }
+
+  return null;
 }
 
 export async function getPortalServices(): Promise<PortalService[]> {

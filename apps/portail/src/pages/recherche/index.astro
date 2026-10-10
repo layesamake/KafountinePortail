@@ -3,7 +3,21 @@ import Base from '../../layouts/Base.astro';
 import { getPortalSearchEntries } from '../../lib/content';
 
 const entries = await getPortalSearchEntries();
-const searchTypes = [...new Set(entries.map((entry) => entry.type))].sort((a, b) => a.localeCompare(b, 'fr'));
+const supportedSearchTypes = [
+  'Alerte communale',
+  'Agent municipal',
+  'Commission municipale',
+  'Démarche administrative',
+  'Document public',
+  'Élu municipal',
+  'Événement communal',
+  'Marché public',
+  'Projet municipal',
+  'Service municipal',
+  'Session du conseil municipal',
+  'Village ou zone',
+];
+const searchTypes = [...new Set([...supportedSearchTypes, ...entries.map((entry) => entry.type)])].sort((a, b) => a.localeCompare(b, 'fr'));
 ---
 <Base title="Recherche" description="Recherchez un service, un élu, une commission ou un village sur le portail citoyen de Kafountine.">
   <section class="page-hero">

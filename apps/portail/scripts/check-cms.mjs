@@ -21,16 +21,25 @@ const expectedTaxonomies = [
 ];
 
 async function getJson(path) {
-  const url = new URL(`${cmsUrl}${path}`);
-  url.searchParams.set('_portal_check', Date.now().toString());
-  const response = await fetch(url, {
-    headers: { accept: 'application/json', 'cache-control': 'no-cache' },
-    signal: AbortSignal.timeout(15_000),
-  });
-  if (!response.ok) {
-    throw new Error(`${path} → HTTP ${response.status}`);
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const url = new URL(`${cmsUrl}${path}`);
+      url.searchParams.set('_portal_check', `${Date.now()}-${attempt}`);
+      const response = await fetch(url, {
+        headers: { accept: 'application/json', 'cache-control': 'no-cache' },
+        signal: AbortSignal.timeout(20_000),
+      });
+      if (!response.ok) {
+        throw new Error(`${path} → HTTP ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      lastError = error;
+      if (attempt < 3) await new Promise((resolve) => setTimeout(resolve, 500 * attempt));
+    }
   }
-  return response.json();
+  throw lastError;
 }
 
 const [types, taxonomies] = await Promise.all([
