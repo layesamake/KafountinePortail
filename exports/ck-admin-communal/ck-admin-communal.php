@@ -238,19 +238,120 @@ function ck_admin_communal_navigation_menu() {
 }
 add_action( 'admin_menu', 'ck_admin_communal_navigation_menu', 20 );
 
+function ck_admin_communal_dashboard_counts() {
+	$zone_count = taxonomy_exists( 'ck_zone' ) ? wp_count_terms( array( 'taxonomy' => 'ck_zone', 'hide_empty' => false ) ) : 0;
+	$counts = array(
+		'zones'       => is_wp_error( $zone_count ) ? 0 : (int) $zone_count,
+		'services'    => 0,
+		'elu'         => 0,
+		'commissions' => 0,
+		'agents'      => 0,
+		'demarches'   => 0,
+		'documents'   => 0,
+		'projets'     => 0,
+		'pending'     => 0,
+	);
+
+	$post_types = array(
+		'services'    => 'ck_service',
+		'elu'         => 'ck_elu',
+		'commissions' => 'ck_commission',
+		'agents'      => 'ck_agent',
+		'demarches'   => 'ck_demarche',
+		'documents'   => 'ck_document',
+		'projets'     => 'ck_projet',
+	);
+
+	foreach ( $post_types as $key => $post_type ) {
+		if ( ! post_type_exists( $post_type ) ) {
+			continue;
+		}
+		$counts_for_type = wp_count_posts( $post_type );
+		$counts[ $key ] = (int) ( $counts_for_type->publish ?? 0 );
+		$counts['pending'] += (int) ( $counts_for_type->pending ?? 0 ) + (int) ( $counts_for_type->draft ?? 0 );
+	}
+
+	return $counts;
+}
+
+function ck_admin_communal_dashboard_link( $label, $url, $class = 'button button-secondary' ) {
+	return '<a class="' . esc_attr( $class ) . '" href="' . esc_url( admin_url( $url ) ) . '">' . esc_html( $label ) . '</a>';
+}
+
 function ck_admin_communal_navigation_page() {
-	$items = ck_admin_communal_navigation_items();
+	$counts = ck_admin_communal_dashboard_counts();
+	$user = wp_get_current_user();
+	$display_name = $user->display_name ? $user->display_name : $user->user_login;
 	?>
-	<div class="wrap ck-communal-navigation">
-		<h1>Commune de Kafountine</h1>
-		<p>Accès rapide aux espaces de gestion autorisés pour votre profil.</p>
-		<nav aria-label="Navigation communale">
-			<ul>
-				<?php foreach ( $items as $item ) : ?>
-					<li><a class="button button-secondary" href="<?php echo esc_url( admin_url( $item['url'] ) ); ?>"><?php echo esc_html( $item['label'] ); ?></a></li>
-				<?php endforeach; ?>
-			</ul>
-		</nav>
+	<div class="wrap ck-communal-dashboard" id="ck-communal-dashboard">
+		<section class="ck-dashboard-hero" aria-labelledby="ck-dashboard-title">
+			<div>
+				<p class="ck-dashboard-eyebrow">PILOTAGE DE LA COMMUNE</p>
+				<h1 id="ck-dashboard-title">Bonjour, <?php echo esc_html( $display_name ); ?></h1>
+				<p>Préparez les informations publiques de la Commune de Kafountine depuis un espace de gestion simple et sécurisé.</p>
+			</div>
+			<div class="ck-dashboard-hero-actions">
+				<a class="button button-secondary" href="<?php echo esc_url( ck_admin_communal_portal_url() ); ?>">Voir le portail public</a>
+			</div>
+		</section>
+
+		<section class="ck-dashboard-stats" aria-label="État des contenus publiés">
+			<?php
+			$stats = array(
+				array( 'label' => 'Villages et zones', 'value' => $counts['zones'], 'url' => 'edit-tags.php?taxonomy=ck_zone' ),
+				array( 'label' => 'Services municipaux', 'value' => $counts['services'], 'url' => 'edit.php?post_type=ck_service' ),
+				array( 'label' => 'Élus', 'value' => $counts['elu'], 'url' => 'edit.php?post_type=ck_elu' ),
+				array( 'label' => 'Agents', 'value' => $counts['agents'], 'url' => 'edit.php?post_type=ck_agent' ),
+				array( 'label' => 'Démarches', 'value' => $counts['demarches'], 'url' => 'edit.php?post_type=ck_demarche' ),
+				array( 'label' => 'Documents publics', 'value' => $counts['documents'], 'url' => 'edit.php?post_type=ck_document' ),
+			);
+			foreach ( $stats as $stat ) :
+				?>
+				<a class="ck-dashboard-stat" href="<?php echo esc_url( admin_url( $stat['url'] ) ); ?>">
+					<strong><?php echo esc_html( number_format_i18n( $stat['value'] ) ); ?></strong>
+					<span><?php echo esc_html( $stat['label'] ); ?></span>
+				</a>
+				<?php
+			endforeach;
+			?>
+		</section>
+
+		<section class="ck-dashboard-grid" aria-label="Actions communales">
+			<article class="ck-dashboard-card ck-dashboard-card-primary">
+				<p class="ck-dashboard-card-kicker">CONTENUS À PRÉPARER</p>
+				<h2>Faire vivre les données communales</h2>
+				<p><?php echo esc_html( number_format_i18n( $counts['pending'] ) ); ?> contenu(s) sont en brouillon ou en attente de relecture.</p>
+				<div class="ck-dashboard-actions">
+					<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_demarche' ) ) : ?>
+						<?php echo ck_admin_communal_dashboard_link( 'Ajouter une démarche', 'post-new.php?post_type=ck_demarche', 'button button-primary' ); ?>
+					<?php endif; ?>
+					<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_projet' ) ) : ?>
+						<?php echo ck_admin_communal_dashboard_link( 'Ajouter un projet', 'post-new.php?post_type=ck_projet', 'button button-secondary' ); ?>
+					<?php endif; ?>
+				</div>
+			</article>
+
+			<article class="ck-dashboard-card">
+				<p class="ck-dashboard-card-kicker">TERRITOIRE</p>
+				<h2>Gérer les villages et zones</h2>
+				<p>Complétez les informations des termes de la taxonomie ck_zone sans créer de type de contenu village autonome.</p>
+				<?php if ( current_user_can( 'manage_categories' ) && taxonomy_exists( 'ck_zone' ) ) : ?>
+					<?php echo ck_admin_communal_dashboard_link( 'Gérer les zones', 'edit-tags.php?taxonomy=ck_zone', 'button button-primary' ); ?>
+				<?php endif; ?>
+			</article>
+
+			<article class="ck-dashboard-card">
+				<p class="ck-dashboard-card-kicker">ORGANISATION</p>
+				<h2>Accéder aux registres communaux</h2>
+				<p>Retrouvez les services, élus, commissions et agents selon les droits de votre compte.</p>
+				<div class="ck-dashboard-actions">
+					<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_service' ) ) : ?>
+						<?php echo ck_admin_communal_dashboard_link( 'Services aux citoyens', 'edit.php?post_type=ck_service', 'button button-secondary' ); ?>
+					<?php endif; ?>
+					<?php echo ck_admin_communal_dashboard_link( 'Mon profil', 'profile.php', 'button button-secondary' ); ?>
+				</div>
+			</article>
+		</section>
 	</div>
 	<?php
 }
