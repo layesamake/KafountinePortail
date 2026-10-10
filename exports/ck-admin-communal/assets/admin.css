@@ -1,0 +1,121 @@
+:root {
+	--ck-navy: #051B67;
+	--ck-blue: #064EB6;
+	--ck-water: #48AFF3;
+	--ck-orange: #F05A24;
+	--ck-ink: #17213d;
+	--ck-border: #d8e2f2;
+}
+
+body.ck-admin-communal {
+	--wp-admin-theme-color: var(--ck-blue);
+	--wp-admin-theme-color--rgb: 6, 78, 182;
+	--wp-admin-theme-color-darker-10: #0543a0;
+	--wp-admin-theme-color-darker-20: var(--ck-navy);
+	background: #f5f8fc;
+}
+
+body.ck-admin-communal #wpadminbar,
+body.ck-admin-communal #adminmenuback,
+body.ck-admin-communal #adminmenuwrap {
+	background: var(--ck-navy);
+}
+
+body.ck-admin-communal #wpadminbar .ab-item,
+body.ck-admin-communal #adminmenu a {
+	color: #fff;
+}
+
+body.ck-admin-communal-business #wpadminbar #wp-admin-bar-wp-logo {
+	display: none;
+}
+
+body.ck-admin-communal #adminmenu .wp-submenu,
+body.ck-admin-communal #adminmenu .wp-has-current-submenu .wp-submenu,
+body.ck-admin-communal #adminmenu .wp-has-current-submenu.opensub .wp-submenu {
+	background: #03134a;
+}
+
+body.ck-admin-communal #adminmenu .wp-submenu a {
+	color: #dce9ff;
+}
+
+body.ck-admin-communal #adminmenu li a:focus,
+body.ck-admin-communal #adminmenu li a:hover,
+body.ck-admin-communal #adminmenu li.opensub > a.menu-top,
+body.ck-admin-communal #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,
+body.ck-admin-communal #adminmenu li.current a.menu-top {
+	background: var(--ck-blue);
+	color: #fff;
+}
+
+body.ck-admin-communal #adminmenu .wp-submenu a:focus,
+body.ck-admin-communal #adminmenu .wp-submenu a:hover {
+	background: var(--ck-water);
+	color: var(--ck-navy);
+}
+
+body.ck-admin-communal .wrap h1,
+body.ck-admin-communal .wrap h2,
+body.ck-admin-communal .wrap h3 {
+	color: var(--ck-navy);
+}
+
+body.ck-admin-communal .button-primary {
+	background: var(--ck-blue);
+	border-color: var(--ck-navy);
+}
+
+body.ck-admin-communal .button-primary:hover,
+body.ck-admin-communal .button-primary:focus {
+	background: var(--ck-navy);
+	border-color: var(--ck-navy);
+}
+
+body.ck-admin-communal a:focus,
+body.ck-admin-communal input:focus,
+body.ck-admin-communal select:focus,
+body.ck-admin-communal textarea:focus,
+body.ck-admin-communal button:focus {
+	outline: 3px solid var(--ck-orange);
+	outline-offset: 2px;
+	box-shadow: none;
+}
+
+body.ck-admin-communal #wpadminbar #wp-admin-bar-site-name > .ab-item::before {
+	content: '';
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: -4px 6px 0 0;
+	vertical-align: middle;
+	background: url('../assets/logo-portailKafountine.png') center / contain no-repeat;
+}
+
+body.ck-admin-communal #wpfooter {
+	color: var(--ck-navy);
+}
+
+.ck-communal-navigation nav ul {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+	gap: 12px;
+	max-width: 900px;
+	margin-top: 24px;
+}
+
+.ck-communal-navigation nav li {
+	margin: 0;
+}
+
+.ck-communal-navigation nav .button {
+	width: 100%;
+	min-height: 44px;
+	text-align: left;
+}
+
+@media (max-width: 782px) {
+	body.ck-admin-communal #wpadminbar #wp-admin-bar-site-name > .ab-item::before {
+		margin-right: 2px;
+	}
+}
