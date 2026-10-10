@@ -286,24 +286,22 @@ function ck_admin_communal_navigation_page() {
 	<div class="wrap ck-communal-dashboard" id="ck-communal-dashboard">
 		<section class="ck-dashboard-hero" aria-labelledby="ck-dashboard-title">
 			<div>
-				<p class="ck-dashboard-eyebrow">PILOTAGE DE LA COMMUNE</p>
+				<p class="ck-dashboard-eyebrow">ESPACE ÉDITORIAL COMMUNAL</p>
 				<h1 id="ck-dashboard-title">Bonjour, <?php echo esc_html( $display_name ); ?></h1>
-				<p>Préparez les informations publiques de la Commune de Kafountine depuis un espace de gestion simple et sécurisé.</p>
+				<p>Pilotez les informations qui font vivre la Commune de Kafountine.</p>
 			</div>
 			<div class="ck-dashboard-hero-actions">
 				<a class="button button-secondary" href="<?php echo esc_url( ck_admin_communal_portal_url() ); ?>">Voir le portail public</a>
 			</div>
 		</section>
 
-		<section class="ck-dashboard-stats" aria-label="État des contenus publiés">
+		<section class="ck-dashboard-stats" aria-label="État des contenus communaux">
 			<?php
 			$stats = array(
-				array( 'label' => 'Villages et zones', 'value' => $counts['zones'], 'url' => 'edit-tags.php?taxonomy=ck_zone' ),
-				array( 'label' => 'Services municipaux', 'value' => $counts['services'], 'url' => 'edit.php?post_type=ck_service' ),
-				array( 'label' => 'Élus', 'value' => $counts['elu'], 'url' => 'edit.php?post_type=ck_elu' ),
-				array( 'label' => 'Agents', 'value' => $counts['agents'], 'url' => 'edit.php?post_type=ck_agent' ),
-				array( 'label' => 'Démarches', 'value' => $counts['demarches'], 'url' => 'edit.php?post_type=ck_demarche' ),
-				array( 'label' => 'Documents publics', 'value' => $counts['documents'], 'url' => 'edit.php?post_type=ck_document' ),
+				array( 'label' => 'fiches villages', 'value' => $counts['zones'], 'url' => 'edit-tags.php?taxonomy=ck_zone' ),
+				array( 'label' => 'services municipaux', 'value' => $counts['services'], 'url' => 'edit.php?post_type=ck_service' ),
+				array( 'label' => 'contenus à relire', 'value' => $counts['pending'], 'url' => 'edit.php?post_status=pending' ),
+				array( 'label' => 'documents publics', 'value' => $counts['documents'], 'url' => 'edit.php?post_type=ck_document' ),
 			);
 			foreach ( $stats as $stat ) :
 				?>
@@ -316,41 +314,64 @@ function ck_admin_communal_navigation_page() {
 			?>
 		</section>
 
-		<section class="ck-dashboard-grid" aria-label="Actions communales">
-			<article class="ck-dashboard-card ck-dashboard-card-primary">
-				<p class="ck-dashboard-card-kicker">CONTENUS À PRÉPARER</p>
-				<h2>Faire vivre les données communales</h2>
-				<p><?php echo esc_html( number_format_i18n( $counts['pending'] ) ); ?> contenu(s) sont en brouillon ou en attente de relecture.</p>
-				<div class="ck-dashboard-actions">
-					<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_demarche' ) ) : ?>
-						<?php echo ck_admin_communal_dashboard_link( 'Ajouter une démarche', 'post-new.php?post_type=ck_demarche', 'button button-primary' ); ?>
-					<?php endif; ?>
-					<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_projet' ) ) : ?>
-						<?php echo ck_admin_communal_dashboard_link( 'Ajouter un projet', 'post-new.php?post_type=ck_projet', 'button button-secondary' ); ?>
-					<?php endif; ?>
-				</div>
-			</article>
-
-			<article class="ck-dashboard-card">
-				<p class="ck-dashboard-card-kicker">TERRITOIRE</p>
-				<h2>Gérer les villages et zones</h2>
-				<p>Complétez les informations des termes de la taxonomie ck_zone sans créer de type de contenu village autonome.</p>
-				<?php if ( current_user_can( 'manage_categories' ) && taxonomy_exists( 'ck_zone' ) ) : ?>
-					<?php echo ck_admin_communal_dashboard_link( 'Gérer les zones', 'edit-tags.php?taxonomy=ck_zone', 'button button-primary' ); ?>
+		<section class="ck-dashboard-review" aria-labelledby="ck-dashboard-review-title">
+			<div>
+				<p class="ck-dashboard-card-kicker">SUIVI ÉDITORIAL</p>
+				<h2 id="ck-dashboard-review-title">À traiter en priorité</h2>
+				<p>Les contenus enregistrés en brouillon ou envoyés pour relecture apparaîtront ici.</p>
+				<?php if ( $counts['pending'] > 0 ) : ?>
+					<p class="ck-dashboard-review-status"><strong><?php echo esc_html( number_format_i18n( $counts['pending'] ) ); ?></strong> contenu(s) nécessitent votre attention.</p>
+				<?php else : ?>
+					<p class="ck-dashboard-review-status">Aucun contenu en attente pour le moment.</p>
 				<?php endif; ?>
-			</article>
+			</div>
+			<?php if ( $counts['pending'] > 0 && current_user_can( 'edit_posts' ) ) : ?>
+				<?php echo ck_admin_communal_dashboard_link( 'Ouvrir les contenus à relire', 'edit.php?post_status=pending', 'button button-primary' ); ?>
+			<?php endif; ?>
+		</section>
 
-			<article class="ck-dashboard-card">
-				<p class="ck-dashboard-card-kicker">ORGANISATION</p>
-				<h2>Accéder aux registres communaux</h2>
-				<p>Retrouvez les services, élus, commissions et agents selon les droits de votre compte.</p>
-				<div class="ck-dashboard-actions">
-					<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_service' ) ) : ?>
-						<?php echo ck_admin_communal_dashboard_link( 'Services aux citoyens', 'edit.php?post_type=ck_service', 'button button-secondary' ); ?>
-					<?php endif; ?>
-					<?php echo ck_admin_communal_dashboard_link( 'Mon profil', 'profile.php', 'button button-secondary' ); ?>
+		<section class="ck-dashboard-quick-actions" aria-labelledby="ck-dashboard-actions-title">
+			<div class="ck-dashboard-section-heading">
+				<div>
+					<p class="ck-dashboard-card-kicker">ACCÈS RAPIDES</p>
+					<h2 id="ck-dashboard-actions-title">Gérer les informations communales</h2>
 				</div>
-			</article>
+			</div>
+			<div class="ck-dashboard-grid">
+				<article class="ck-dashboard-card ck-dashboard-card-primary">
+					<h3>Préparer un contenu</h3>
+					<p>Ajoutez une démarche ou un projet, puis transmettez-le pour relecture.</p>
+					<div class="ck-dashboard-actions">
+						<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_demarche' ) ) : ?>
+							<?php echo ck_admin_communal_dashboard_link( 'Ajouter une démarche', 'post-new.php?post_type=ck_demarche', 'button button-primary' ); ?>
+						<?php endif; ?>
+						<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_projet' ) ) : ?>
+							<?php echo ck_admin_communal_dashboard_link( 'Ajouter un projet', 'post-new.php?post_type=ck_projet', 'button button-secondary' ); ?>
+						<?php endif; ?>
+					</div>
+				</article>
+
+				<article class="ck-dashboard-card">
+					<p class="ck-dashboard-card-kicker">TERRITOIRE</p>
+					<h3>Villages et zones</h3>
+					<p>Complétez les informations des termes de la taxonomie ck_zone.</p>
+					<?php if ( current_user_can( 'manage_categories' ) && taxonomy_exists( 'ck_zone' ) ) : ?>
+						<?php echo ck_admin_communal_dashboard_link( 'Gérer les zones', 'edit-tags.php?taxonomy=ck_zone', 'button button-primary' ); ?>
+					<?php endif; ?>
+				</article>
+
+				<article class="ck-dashboard-card">
+					<p class="ck-dashboard-card-kicker">ORGANISATION</p>
+					<h3>Registres communaux</h3>
+					<p>Retrouvez les services, élus, commissions et agents selon vos droits.</p>
+					<div class="ck-dashboard-actions">
+						<?php if ( current_user_can( 'edit_posts' ) && post_type_exists( 'ck_service' ) ) : ?>
+							<?php echo ck_admin_communal_dashboard_link( 'Services aux citoyens', 'edit.php?post_type=ck_service', 'button button-secondary' ); ?>
+						<?php endif; ?>
+						<?php echo ck_admin_communal_dashboard_link( 'Mon profil', 'profile.php', 'button button-secondary' ); ?>
+					</div>
+				</article>
+			</div>
 		</section>
 	</div>
 	<?php

@@ -33,11 +33,16 @@ assert "ck_admin_communal_roles_version" in PLUGIN
 assert "delete_option( 'ck_admin_communal_roles_version' )" in (PACKAGE / "uninstall.php").read_text(encoding="utf-8")
 assert "ck_admin_communal_dashboard_counts" in PLUGIN
 assert "ck-communal-dashboard" in PLUGIN
-assert "CONTENUS À PRÉPARER" in PLUGIN
-assert "Villages et zones" in PLUGIN
+assert "ESPACE ÉDITORIAL COMMUNAL" in PLUGIN
+assert "fiches villages" in PLUGIN
 assert ".ck-dashboard-hero" in ADMIN_CSS
 assert ".ck-dashboard-stats" in ADMIN_CSS
 assert ".ck-dashboard-card" in ADMIN_CSS
+assert "ck-dashboard-review" in PLUGIN
+assert "À traiter en priorité" in PLUGIN
+assert "ck-dashboard-quick-actions" in PLUGIN
+assert ".ck-dashboard-review" in ADMIN_CSS
+assert ".ck-dashboard-quick-actions" in ADMIN_CSS
 
 with ZipFile(ARCHIVE) as archive:
     names = set(archive.namelist())
