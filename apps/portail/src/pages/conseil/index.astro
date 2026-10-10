@@ -32,11 +32,11 @@ const formatDate = (value: string) => {
           </div>
           <div class="member-grid">
             {members.map((member, index) => (
-              <article class="member-card">
+              <a class="member-card" href={`/conseil/elus/${member.slug}/`}>
                 <span class="member-number">{String(index + 1).padStart(2, '0')}</span>
                 <h3 set:html={member.title.rendered}></h3>
                 <p>Membre du Conseil municipal</p>
-              </article>
+              </a>
             ))}
           </div>
         </>
