@@ -1,0 +1,29 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPortalCouncilMembers } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const members = await getPortalCouncilMembers();
+  return members.map((member) => ({
+    params: { slug: member.slug },
+    props: { member },
+  }));
+}
+
+const { member } = Astro.props;
+---
+<Base title={member.title.rendered} description={`Fiche de l’élu municipal ${member.title.rendered}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">ÉLU MUNICIPAL</p>
+      <h1 set:html={member.title.rendered}></h1>
+      <p>Membre du Conseil municipal de Kafountine.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={member.content.rendered}></article>
+      <a class="button button-secondary" href="/conseil/">← Retour au conseil municipal</a>
+    </div>
+  </section>
+</Base>
