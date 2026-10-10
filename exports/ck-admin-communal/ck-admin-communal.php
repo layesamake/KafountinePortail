@@ -11,9 +11,64 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '1.0.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '1.1.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
+
+/**
+ * Expose only the public municipal settings consumed by the static portal.
+ * Private editorial fields and contacts are intentionally excluded.
+ */
+function ck_admin_communal_portal_settings() {
+	$hours = function_exists( 'get_field' ) ? get_field( 'horaires', 'option' ) : array();
+	$formatted_hours = array();
+
+	if ( is_array( $hours ) ) {
+		foreach ( $hours as $entry ) {
+			$day = sanitize_text_field( $entry['jour'] ?? '' );
+			$opening = sanitize_text_field( $entry['ouverture'] ?? '' );
+			$closing = sanitize_text_field( $entry['fermeture'] ?? '' );
+			if ( $day && $opening && $closing ) {
+				$formatted_hours[] = array(
+					'day'   => $day,
+					'value' => $opening . ' — ' . $closing,
+				);
+			}
+		}
+	}
+
+	$read_option = static function ( $field, $fallback = '' ) {
+		$value = function_exists( 'get_field' ) ? get_field( $field, 'option' ) : '';
+		return is_string( $value ) && trim( $value ) !== '' ? sanitize_textarea_field( $value ) : $fallback;
+	};
+
+	return rest_ensure_response(
+		array(
+			'denomination'  => $read_option( 'denomination', 'Commune de Kafountine' ),
+			'presentation'  => $read_option( 'presentation' ),
+			'region'        => $read_option( 'region' ),
+			'departement'   => $read_option( 'departement' ),
+			'arrondissement' => $read_option( 'arrondissement' ),
+			'address'       => $read_option( 'adresse' ),
+			'telephone'     => $read_option( 'telephone' ),
+			'email'         => function_exists( 'get_field' ) ? sanitize_email( (string) get_field( 'email', 'option' ) ) : '',
+			'hours'         => $formatted_hours,
+		)
+	);
+}
+
+function ck_admin_communal_register_portal_routes() {
+	register_rest_route(
+		'ck/v1',
+		'/portal-settings',
+		array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => 'ck_admin_communal_portal_settings',
+			'permission_callback' => '__return_true',
+		)
+	);
+}
+add_action( 'rest_api_init', 'ck_admin_communal_register_portal_routes' );
 
 /**
  * Return true for technical administrators who must retain the complete UI.

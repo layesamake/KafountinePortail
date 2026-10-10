@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import { getPortalSettings, getPortalZones } from '../lib/content';
 
-const settings = getPortalSettings();
+const settings = await getPortalSettings();
 const zones = await getPortalZones();
 ---
 <Base title="Votre commune, vos services">
