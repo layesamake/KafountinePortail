@@ -19,7 +19,7 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
-assert "Version: 1.6.0" in PLUGIN
+assert "Version: 1.7.0" in PLUGIN
 assert "ck_admin_communal_register_roles" in PLUGIN
 assert "register_activation_hook" in PLUGIN
 assert "add_role( 'ck_gestionnaire'" in PLUGIN
@@ -49,9 +49,9 @@ assert "add_action( 'admin_init', 'ck_admin_communal_redirect_to_home' )" in PLU
 assert "ck_admin_communal_login_redirect" in PLUGIN
 assert "add_filter( 'login_redirect', 'ck_admin_communal_login_redirect'" in PLUGIN
 assert "ck_admin_communal_portal_url()" in PLUGIN
-assert "'ck-portal-public'" in PLUGIN
-assert "Site WordPress" in PLUGIN
-assert "ck_admin_communal_register_navigation_submenus" in PLUGIN
+assert "remove_node( 'site-name' )" in PLUGIN
+assert "'id'    => 'ck-portal-public'" in PLUGIN
+assert "'title' => 'Portail public'" in PLUGIN
 assert "add_submenu_page" in PLUGIN
 assert "business_duplicate_menus" in PLUGIN
 assert "'edit.php?post_type=ck_service'" in PLUGIN
