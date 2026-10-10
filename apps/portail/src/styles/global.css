@@ -101,7 +101,7 @@ dd { margin: 0; color: var(--navy); font-weight: 800; text-align: right; }
 .member-card h3, .commission-card h3 { margin: 22px 0 6px; font-size: 1.05rem; }
 .member-card p { margin: 0; color: var(--muted); font-size: .88rem; }
 .commission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.commission-card { min-height: 190px; }
+.commission-card { display: block; min-height: 190px; }
 .commission-card .cms-content { margin: 15px 0 0; font-size: .9rem; }
 .service-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .service-card { display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: start; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fff; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
