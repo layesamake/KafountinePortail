@@ -16,7 +16,10 @@ Installation
 3. Tester d’abord sur une préproduction ou une copie locale du CMS.
 
 Désinstallation
-La désactivation puis la suppression de l’extension ne supprime aucune donnée : l’extension ne crée ni option, ni contenu, ni terme, ni compte utilisateur.
+La désactivation puis la suppression de l’extension ne supprime aucun contenu, terme, média, compte utilisateur ou attribution de rôle. Le marqueur technique de synchronisation est supprimé à la désinstallation. Le rôle `Gestionnaire communal` reste volontairement disponible afin de ne pas retirer brutalement les droits des comptes qui lui sont affectés ; il peut être supprimé manuellement après réaffectation des utilisateurs.
+
+Rôle Gestionnaire communal
+Le rôle peut préparer les contenus, modifier les contenus existants, téléverser des médias et gérer les termes éditoriaux. Il ne peut ni publier ni supprimer les contenus. La publication doit être effectuée par un éditeur communal ou un administrateur technique.
 
 Règles d’accès
 Les comptes disposant de `manage_options` ou `manage_network` conservent l’interface complète. Les autres profils ne voient pas les écrans techniques (extensions, thèmes, réglages, outils, utilisateurs, mises à jour et commentaires). Les contrôles natifs de capacités WordPress restent applicables aux URL directes.
