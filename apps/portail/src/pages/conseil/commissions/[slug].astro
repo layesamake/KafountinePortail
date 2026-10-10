@@ -1,0 +1,29 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPortalCommissions } from '../../../lib/content';
+
+export async function getStaticPaths() {
+  const commissions = await getPortalCommissions();
+  return commissions.map((commission) => ({
+    params: { slug: commission.slug },
+    props: { commission },
+  }));
+}
+
+const { commission } = Astro.props;
+---
+<Base title={commission.title.rendered} description={`Fiche de la commission municipale ${commission.title.rendered}.`}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">COMMISSION MUNICIPALE</p>
+      <h1 set:html={commission.title.rendered}></h1>
+      <p>Commission thématique du Conseil municipal de Kafountine.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      <article class="content-card cms-content" set:html={commission.content.rendered}></article>
+      <a class="button button-secondary" href="/conseil/">← Retour au conseil municipal</a>
+    </div>
+  </section>
+</Base>

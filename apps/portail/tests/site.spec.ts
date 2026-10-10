@@ -57,7 +57,7 @@ test('la page du conseil affiche les élus et commissions du CMS', async ({ page
   await expect(page.getByText(/18 commissions publiées/i)).toBeVisible();
   await expect(page.getByText('Aminata Soumare DIATTA', { exact: true })).toBeVisible();
   await expect(page.getByText('Sécurité', { exact: true })).toBeVisible();
-  await expect(page.locator('a.member-card').filter({ hasText: 'Aminata Soumare DIATTA' })).toHaveAttribute('href', '/conseil/elus/aminata-soumare-diatta/');
+  await expect(page.locator('a.commission-card').filter({ hasText: 'Sécurité' })).toHaveAttribute('href', '/conseil/commissions/securite/');
 });
 
 test('la fiche individuelle d’un élu municipal est accessible', async ({ page }) => {
@@ -65,6 +65,13 @@ test('la fiche individuelle d’un élu municipal est accessible', async ({ page
 
   await expect(page.getByRole('heading', { name: 'Aminata Soumare DIATTA', exact: true })).toBeVisible();
   await expect(page.getByText(/ÉLU MUNICIPAL/i)).toBeVisible();
+});
+
+test('la fiche individuelle d’une commission municipale est accessible', async ({ page }) => {
+  await page.goto('/conseil/commissions/securite/');
+
+  await expect(page.getByRole('heading', { name: 'Sécurité', exact: true })).toBeVisible();
+  await expect(page.getByText(/COMMISSION MUNICIPALE/i)).toBeVisible();
 });
 
 test('le conseil affiche aussi les sessions publiées du CMS', async ({ page }) => {

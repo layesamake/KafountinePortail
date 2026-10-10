@@ -56,11 +56,11 @@ const formatDate = (value: string) => {
           </div>
           <div class="commission-grid">
             {commissions.map((commission, index) => (
-              <article class="commission-card">
+              <a class="commission-card" href={`/conseil/commissions/${commission.slug}/`}>
                 <span class="commission-number">{String(index + 1).padStart(2, '0')}</span>
                 <h3 set:html={commission.title.rendered}></h3>
                 <div class="cms-content" set:html={commission.content.rendered}></div>
-              </article>
+              </a>
             ))}
           </div>
         </>

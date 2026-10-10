@@ -313,7 +313,7 @@ export async function getPortalSearchEntries(): Promise<PortalSearchEntry[]> {
       title: searchText(commission.title),
       excerpt: searchText(commission.excerpt) || searchText(commission.content),
       type: 'Commission municipale',
-      href: '/conseil/',
+      href: `/conseil/commissions/${commission.slug}/`,
     })),
     ...sessions.map((session) => ({
       title: searchText(session.title),
