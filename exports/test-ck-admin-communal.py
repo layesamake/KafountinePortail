@@ -19,7 +19,7 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
-assert "Version: 1.4.0" in PLUGIN
+assert "Version: 1.5.0" in PLUGIN
 assert "ck_admin_communal_register_roles" in PLUGIN
 assert "register_activation_hook" in PLUGIN
 assert "add_role( 'ck_gestionnaire'" in PLUGIN
@@ -48,7 +48,10 @@ assert "ck_admin_communal_redirect_to_home" in PLUGIN
 assert "add_action( 'admin_init', 'ck_admin_communal_redirect_to_home' )" in PLUGIN
 assert "ck_admin_communal_login_redirect" in PLUGIN
 assert "add_filter( 'login_redirect', 'ck_admin_communal_login_redirect'" in PLUGIN
-assert "admin.php?page=ck-admin-communal-home" in PLUGIN
+assert "ck_admin_communal_portal_url()" in PLUGIN
+assert "'ck-portal-public'" in PLUGIN
+assert "Site WordPress" in PLUGIN
+assert "home_url( '/' )" in PLUGIN
 
 with ZipFile(ARCHIVE) as archive:
     names = set(archive.namelist())
