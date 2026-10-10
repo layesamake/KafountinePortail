@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 1.7.0
+ * Version: 1.8.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '1.7.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '1.8.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -286,6 +286,9 @@ function ck_admin_communal_register_navigation_submenus() {
 		array( 'title' => 'Démarches administratives', 'menu' => 'Démarches', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_demarche', 'available' => post_type_exists( 'ck_demarche' ) ),
 		array( 'title' => 'Documents publics', 'menu' => 'Documents', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_document', 'available' => post_type_exists( 'ck_document' ) ),
 		array( 'title' => 'Projets et transparence', 'menu' => 'Projets', 'capability' => 'edit_posts', 'slug' => 'edit.php?post_type=ck_projet', 'available' => post_type_exists( 'ck_projet' ) ),
+		array( 'title' => 'Nouvelle démarche', 'menu' => 'Ajouter une démarche', 'capability' => 'edit_posts', 'slug' => 'post-new.php?post_type=ck_demarche', 'available' => post_type_exists( 'ck_demarche' ) ),
+		array( 'title' => 'Nouveau document', 'menu' => 'Ajouter un document', 'capability' => 'edit_posts', 'slug' => 'post-new.php?post_type=ck_document', 'available' => post_type_exists( 'ck_document' ) ),
+		array( 'title' => 'Nouveau projet', 'menu' => 'Ajouter un projet', 'capability' => 'edit_posts', 'slug' => 'post-new.php?post_type=ck_projet', 'available' => post_type_exists( 'ck_projet' ) ),
 		array( 'title' => 'Médiathèque', 'menu' => 'Médiathèque', 'capability' => 'upload_files', 'slug' => 'upload.php', 'available' => true ),
 		array( 'title' => 'Mon profil', 'menu' => 'Mon profil', 'capability' => 'read', 'slug' => 'profile.php', 'available' => true ),
 	);
