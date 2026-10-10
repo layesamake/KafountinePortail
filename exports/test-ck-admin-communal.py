@@ -19,7 +19,7 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
-assert "Version: 2.2.0" in PLUGIN
+assert "Version: 2.3.0" in PLUGIN
 assert "ck_admin_communal_register_roles" in PLUGIN
 assert "register_activation_hook" in PLUGIN
 assert "add_role( 'ck_gestionnaire'" in PLUGIN
@@ -62,6 +62,14 @@ assert "ck_admin_communal_add_editorial_guidance" in PLUGIN
 assert "Source officielle et date de vérification" in PLUGIN
 assert "Référence ou source administrative" in PLUGIN
 assert "Documents justificatifs et date de mise à jour" in PLUGIN
+assert "Session du conseil" in PLUGIN
+assert "Marché public" in PLUGIN
+assert "Alerte municipale" in PLUGIN
+assert "Événement institutionnel" in PLUGIN
+assert "ck_session" in PLUGIN
+assert "ck_marche" in PLUGIN
+assert "ck_alerte" in PLUGIN
+assert "ck_evenement" in PLUGIN
 assert "wp_insert_post_data" in PLUGIN
 assert "'pending'" in PLUGIN
 assert "add_role( 'ck_editeur'" in PLUGIN
