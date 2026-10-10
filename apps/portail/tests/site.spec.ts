@@ -148,3 +148,13 @@ test('la recherche globale filtre les contenus publiés', async ({ page }) => {
   await expect(page.getByText(/résultat/i)).toBeVisible();
   await expect(page.getByRole('link', { name: /Village ou zone Abéné/i })).toBeVisible();
 });
+
+test('la recherche permet de filtrer les résultats par type', async ({ page }) => {
+  await page.goto('/recherche/?q=Abéné');
+
+  await expect(page.getByLabel(/Filtrer par type de contenu/i)).toBeVisible();
+  await expect(page.locator('#portal-search-status')).toContainText(/résultat/);
+
+  await page.getByLabel(/Filtrer par type de contenu/i).selectOption('Élu municipal');
+  await expect(page.getByText(/0 résultat/i)).toBeVisible();
+});
