@@ -19,7 +19,7 @@ assert "'/portal-settings'" in PLUGIN
 assert "permission_callback" in PLUGIN
 assert "'adresse'" in PLUGIN
 assert "'email', 'option'" in PLUGIN
-assert "Version: 2.5.0" in PLUGIN
+assert "Version: 2.6.0" in PLUGIN
 assert "ck_admin_communal_register_roles" in PLUGIN
 assert "register_activation_hook" in PLUGIN
 assert "add_role( 'ck_gestionnaire'" in PLUGIN
@@ -76,6 +76,9 @@ assert "'alertes'     => 0" in PLUGIN
 assert "'evenements'  => 0" in PLUGIN
 assert "'label' => 'marchés publics'" in PLUGIN
 assert "'label' => 'alertes'" in PLUGIN
+assert "'label' => 'élus municipaux'" in PLUGIN
+assert "'label' => 'commissions'" in PLUGIN
+assert "'label' => 'agents communaux'" in PLUGIN
 assert "'drafts'      => 0" in PLUGIN
 assert "brouillons à préparer" in PLUGIN
 assert "sont en attente de relecture" in PLUGIN

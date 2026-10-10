@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CK Admin communal
  * Description: Identité et navigation sécurisée du back-office de la Commune de Kafountine.
- * Version: 2.5.0
+ * Version: 2.6.0
  * Author: Commune de Kafountine
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'CK_ADMIN_COMMUNAL_VERSION', '2.5.0' );
+define( 'CK_ADMIN_COMMUNAL_VERSION', '2.6.0' );
 define( 'CK_ADMIN_COMMUNAL_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CK_ADMIN_COMMUNAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -535,6 +535,9 @@ function ck_admin_communal_navigation_page() {
 			$stats = array(
 				array( 'label' => 'fiches villages', 'value' => $counts['zones'], 'url' => 'edit-tags.php?taxonomy=ck_zone' ),
 				array( 'label' => 'services municipaux', 'value' => $counts['services'], 'url' => 'edit.php?post_type=ck_service' ),
+				array( 'label' => 'élus municipaux', 'value' => $counts['elu'], 'url' => 'edit.php?post_type=ck_elu' ),
+				array( 'label' => 'commissions', 'value' => $counts['commissions'], 'url' => 'edit.php?post_type=ck_commission' ),
+				array( 'label' => 'agents communaux', 'value' => $counts['agents'], 'url' => 'edit.php?post_type=ck_agent' ),
 				array( 'label' => 'contenus à relire', 'value' => $counts['pending'], 'url' => 'admin.php?page=ck-admin-communal-review' ),
 				array( 'label' => 'brouillons à préparer', 'value' => $counts['drafts'], 'url' => 'edit.php?post_status=draft' ),
 				array( 'label' => 'démarches', 'value' => $counts['demarches'], 'url' => 'edit.php?post_type=ck_demarche' ),
