@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPortalActualites, stripHtml } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const actualites = await getPortalActualites();
+  return actualites.map((actualite) => ({ params: { slug: actualite.slug }, props: { actualite } }));
+}
+
+const { actualite } = Astro.props;
+const image = actualite.acf?.image_principale;
+const imageUrl = typeof image === 'object' && image ? image.url : typeof image === 'string' ? image : undefined;
+const description = actualite.acf?.resume || stripHtml(actualite.excerpt?.rendered || actualite.content?.rendered || '');
+const gallery = (actualite.acf?.galerie_images || []).map((item) => typeof item === 'object' && item ? item : null).filter((item): item is { url?: string; alt?: string } => Boolean(item?.url));
+---
+<Base title={stripHtml(actualite.title.rendered)} description={description}>
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">ACTUALITÉ DE LA COMMUNE</p>
+      <h1 set:html={actualite.title.rendered}></h1>
+      <p class="news-card-meta">{actualite.acf?.date_actualite || new Date(actualite.date).toLocaleDateString('fr-FR')}{actualite.acf?.lieu ? ` · ${actualite.acf.lieu}` : ''}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container narrow">
+      {imageUrl && <img class="news-article-image" src={imageUrl} alt={typeof image === 'object' && image?.alt ? image.alt : ''} />}
+      <div class="news-article-meta">
+        {actualite.acf?.auteur_service && <span>Publié par {actualite.acf.auteur_service}</span>}
+        {actualite.acf?.lieu && <span>Lieu : {actualite.acf.lieu}</span>}
+      </div>
+      {description && <p class="news-article-summary">{description}</p>}
+      {actualite.content?.rendered && <article class="content-card cms-content" set:html={actualite.content.rendered}></article>}
+      {gallery.length > 0 && <div class="news-gallery" aria-label="Galerie de l’actualité">{gallery.map((item) => <img src={item.url} alt={item.alt || ''} loading="lazy" />)}</div>}
+      {actualite.acf?.source_externe && <p><a class="text-link" href={actualite.acf.source_externe}>Source externe <span aria-hidden="true">↗</span></a></p>}
+      {actualite.acf?.video_url && <p><a class="button button-secondary" href={actualite.acf.video_url}>Voir la vidéo <span aria-hidden="true">↗</span></a></p>}
+      <a class="button button-secondary" href="/actualites/">← Retour aux actualités</a>
+    </div>
+  </section>
+</Base>

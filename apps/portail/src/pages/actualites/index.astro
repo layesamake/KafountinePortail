@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPortalActualites, stripHtml } from '../../lib/content';
+
+const actualites = await getPortalActualites();
+---
+<Base title="Actualités de la commune">
+  <section class="page-hero">
+    <div class="container narrow">
+      <p class="eyebrow">LA VIE DE LA COMMUNE</p>
+      <h1>Actualités de Kafountine</h1>
+      <p>Les informations, événements et annonces publiés par la commune.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      {actualites.length > 0 ? (
+        <div class="news-grid news-grid-all">
+          {actualites.map((actualite) => {
+            const image = actualite.acf?.image_principale;
+            const imageUrl = typeof image === 'object' && image ? image.url : typeof image === 'string' ? image : undefined;
+            const summary = actualite.acf?.resume || stripHtml(actualite.excerpt?.rendered || actualite.content?.rendered || '');
+            return (
+              <a class="news-card" href={`/actualites/${actualite.slug}/`}>
+                {imageUrl && <img class="news-card-image" src={imageUrl} alt={typeof image === 'object' && image?.alt ? image.alt : ''} loading="lazy" />}
+                <div class="news-card-body">
+                  <p class="news-card-meta">{actualite.acf?.date_actualite || new Date(actualite.date).toLocaleDateString('fr-FR')}</p>
+                  <h2 set:html={actualite.title.rendered}></h2>
+                  {summary && <p>{summary}</p>}
+                  <span class="text-link">Lire l’actualité <span aria-hidden="true">↗</span></span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="empty-state"><span class="empty-state-number">Actualités</span><h2>Aucune actualité publiée pour le moment.</h2><p>Les prochaines informations de la commune apparaîtront ici.</p></div>
+      )}
+    </div>
+  </section>
+</Base>

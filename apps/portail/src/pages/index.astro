@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getPortalSettings, getPortalZones } from '../lib/content';
+import { getPortalActualites, getPortalSettings, getPortalZones, stripHtml } from '../lib/content';
 
 const settings = await getPortalSettings();
 const zones = await getPortalZones();
+const actualites = await getPortalActualites();
 ---
 <Base title="Votre commune, vos services">
   <section class="hero-section">
@@ -30,6 +31,35 @@ const zones = await getPortalZones();
       </aside>
     </div>
   </section>
+
+  {actualites.length > 0 && (
+    <section class="section news-section" aria-labelledby="actualites-title">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">LA VIE DE LA COMMUNE</p><h2 id="actualites-title">Actualités de Kafountine</h2></div>
+          <a class="text-link" href="/actualites/">Toutes les actualités <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="news-grid">
+          {actualites.slice(0, 3).map((actualite, index) => {
+            const image = actualite.acf?.image_principale;
+            const imageUrl = typeof image === 'object' && image ? image.url : typeof image === 'string' ? image : undefined;
+            const summary = actualite.acf?.resume || stripHtml(actualite.excerpt?.rendered || actualite.content?.rendered || '');
+            return (
+              <a class:list={['news-card', { 'news-card-featured': index === 0 }]} href={`/actualites/${actualite.slug}/`}>
+                {imageUrl && <img class="news-card-image" src={imageUrl} alt={typeof image === 'object' && image?.alt ? image.alt : ''} loading={index === 0 ? 'eager' : 'lazy'} />}
+                <div class="news-card-body">
+                  <p class="news-card-meta">{actualite.acf?.date_actualite || new Date(actualite.date).toLocaleDateString('fr-FR')}</p>
+                  <h3 set:html={actualite.title.rendered}></h3>
+                  {summary && <p>{summary}</p>}
+                  <span class="text-link">Lire l’actualité <span aria-hidden="true">↗</span></span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
 
   <section class="section section-quick-actions" aria-labelledby="actions-title">
     <div class="container">

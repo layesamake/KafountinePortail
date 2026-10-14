@@ -81,6 +81,30 @@ export interface PortalAlert {
   ck_zone?: number[];
 }
 
+export interface PortalActualite {
+  id: number;
+  slug: string;
+  date: string;
+  modified?: string;
+  title: { rendered: string };
+  content: { rendered: string; protected: boolean };
+  excerpt: { rendered: string; protected: boolean };
+  link: string;
+  featured_media?: number;
+  acf?: {
+    resume?: string;
+    image_principale?: { url?: string; alt?: string } | string | number | null;
+    date_actualite?: string;
+    auteur_service?: string;
+    lieu?: string;
+    source_externe?: string;
+    video_url?: string;
+    galerie_images?: Array<{ url?: string; alt?: string } | string | number>;
+    a_la_une?: boolean | string;
+    date_expiration?: string;
+  };
+}
+
 export interface PortalDemarche {
   id: number;
   slug: string;
@@ -272,6 +296,22 @@ export async function getPortalAlerts(): Promise<PortalAlert[]> {
   return Array.isArray(alerts) ? alerts : [];
 }
 
+export async function getPortalActualites(): Promise<PortalActualite[]> {
+  const actualites = await fetchCmsJson<PortalActualite[]>('/wp-json/wp/v2/actualites?per_page=12&orderby=date&order=desc');
+  if (!Array.isArray(actualites)) return [];
+
+  const now = Date.now();
+  const isFeatured = (value: boolean | string | undefined): boolean =>
+    value === true || value === '1' || value === 'true' || value === 'oui' || value === 'yes';
+
+  return actualites
+    .filter((actualite) => {
+      const expiration = actualite.acf?.date_expiration;
+      return !expiration || Number.isNaN(Date.parse(expiration)) || Date.parse(expiration) >= now;
+    })
+    .sort((a, b) => Number(isFeatured(b.acf?.a_la_une)) - Number(isFeatured(a.acf?.a_la_une)));
+}
+
 export async function getPortalDemarches(): Promise<PortalDemarche[]> {
   const demarches = await fetchCmsJson<PortalDemarche[]>('/wp-json/wp/v2/ck_demarche?per_page=100&orderby=title&order=asc');
   return Array.isArray(demarches) ? demarches : [];
@@ -304,7 +344,7 @@ export interface PortalSearchEntry {
   href: string;
 }
 
-function stripHtml(value: string): string {
+export function stripHtml(value: string): string {
   return value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
