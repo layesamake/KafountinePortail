@@ -1,0 +1,70 @@
+name: Déploiement production (communekafountine.com)
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # vérifie le CMS toutes les 15 minutes
+  push:
+    branches: [main]
+    paths: ['apps/portail/**', '.github/workflows/deploy-production.yml']
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Forcer le déploiement même sans changement'
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/portail
+    env:
+      CMS_URL: https://cms.communekafountine.com
+      SITE_URL: https://communekafountine.com
+      PUBLIC_INDEXABLE: 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Empreinte du contenu du CMS
+        id: cms
+        run: |
+          NEW=$(node scripts/cms-hash.mjs)
+          OLD=$(curl -fsS "https://communekafountine.com/.cms-hash?$(date +%s)" || echo none)
+          echo "new=$NEW" >> "$GITHUB_OUTPUT"
+          echo "old=$OLD" >> "$GITHUB_OUTPUT"
+          echo "CMS: $NEW (en ligne: $OLD)"
+
+      - name: Décision
+        id: decide
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ] || [ "${{ steps.cms.outputs.new }}" != "${{ steps.cms.outputs.old }}" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"; echo "Aucun changement dans le CMS."
+          fi
+
+      - name: Installation
+        if: steps.decide.outputs.go == 'true'
+        run: npm ci
+
+      - name: Build
+        if: steps.decide.outputs.go == 'true'
+        run: |
+          npm run build
+          echo -n "${{ steps.cms.outputs.new }}" > dist/.cms-hash
+
+      - name: Déploiement Hostinger
+        if: steps.decide.outputs.go == 'true'
+        env:
+          HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+        run: node scripts/deploy-hostinger.mjs dist
