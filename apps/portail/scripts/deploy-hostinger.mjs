@@ -14,7 +14,7 @@ const res = await fetch('https://developers.hostinger.com/api/hosting/v1/files/u
 });
 if (!res.ok) throw new Error(`upload-urls: HTTP ${res.status} ${await res.text()}`);
 const { url, auth_key, rest_auth_key } = await res.json();
-const base = url.replace(/\/$/, '');
+const base = url.replace(/\/$/, '') + (process.env.DEPLOY_PREFIX ? '/' + process.env.DEPLOY_PREFIX : '');
 const headers = { 'X-Auth': auth_key, 'X-Auth-Rest': rest_auth_key, 'Tus-Resumable': '1.0.0' };
 
 function walk(dir) {

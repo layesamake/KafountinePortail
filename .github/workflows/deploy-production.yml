@@ -68,3 +68,15 @@ jobs:
         env:
           HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
         run: node scripts/deploy-hostinger.mjs dist
+
+      # Le dossier dev/ est resynchronisé depuis Git à chaque push (Hostinger) : on y remet le build du site de développement.
+      - name: Rebuild et redéploiement du site dev
+        if: github.event_name != 'schedule'
+        env:
+          HOSTINGER_API_TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+          DEPLOY_PREFIX: dev
+          SITE_URL: https://dev.communekafountine.com
+          PUBLIC_INDEXABLE: 'false'
+        run: |
+          npx astro build --outDir dist-dev
+          node scripts/deploy-hostinger.mjs dist-dev
