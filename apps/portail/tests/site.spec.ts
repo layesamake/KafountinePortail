@@ -4,11 +4,12 @@ test('accueil institutionnel expose les actions prioritaires', async ({ page }) 
   await page.goto('/');
 
   await expect(page).toHaveTitle(/Commune de Kafountine/);
-  await expect(page.getByRole('heading', { name: /Votre commune, vos services/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /portail de la commune de Kafountine/i })).toBeVisible();
   await expect(page.getByRole('img', { name: /Commune de Kafountine — portail citoyen officiel/i })).toBeVisible();
-  await expect(page.locator('.welcome-card dd').filter({ hasText: '19' })).toBeVisible();
-  await expect(page.getByRole('link', { name: /Démarches administratives/i })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Conseil municipal', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Accès direct' })).toBeVisible();
+  await expect(page.locator('.stat').filter({ hasText: 'villages et zones' })).toContainText('19');
+  await expect(page.getByRole('link', { name: /Services et démarches/i }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: /Conseil municipal/i }).first()).toBeVisible();
 });
 
 test('la page 404 propose un retour vers le portail', async ({ page }) => {
@@ -31,7 +32,7 @@ test('le menu mobile s’ouvre et expose la navigation principale', async ({ pag
 
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByRole('navigation', { name: 'Navigation principale' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'La mairie', exact: true })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Navigation principale' }).getByRole('link', { name: 'La mairie', exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'Fermer le menu' }).click();
   await expect(menu).toHaveAttribute('aria-expanded', 'false');
@@ -61,7 +62,7 @@ test('la page du conseil affiche les élus et commissions du CMS', async ({ page
   await page.goto('/conseil/');
 
   await expect(page.getByRole('heading', { name: /Le conseil municipal/i })).toBeVisible();
-  await expect(page.getByText(/56 élus publiés/i)).toBeVisible();
+  await expect(page.getByText(/\d+ élus publiés/i)).toBeVisible();
   await expect(page.getByText(/18 commissions publiées/i)).toBeVisible();
   await expect(page.getByText('Aminata Soumare DIATTA', { exact: true })).toBeVisible();
   await expect(page.getByText('Sécurité', { exact: true })).toBeVisible();

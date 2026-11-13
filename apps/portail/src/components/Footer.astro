@@ -3,27 +3,39 @@ import { getPortalSettings } from '../lib/content';
 const settings = await getPortalSettings();
 ---
 <footer class="site-footer">
+  <div class="boat-stripes" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="container footer-grid">
     <div>
-      <p class="footer-kicker">Portail citoyen officiel</p>
       <h2>{settings.denomination}</h2>
-      <p>{settings.presentation}</p>
-    </div>
-    <div>
-      <h3>Accès rapides</h3>
-      <a href="/services/">Services et démarches</a>
-      <a href="/transparence/documents/">Documents publics</a>
-      <a href="/participer/">Participer à la vie communale</a>
-    </div>
-    <div>
-      <h3>Nous contacter</h3>
       <p>{settings.address}</p>
+      <p>Département de {settings.departement}, région de {settings.region}, Sénégal</p>
       <p>{settings.telephone}</p>
       <p>{settings.email}</p>
     </div>
+    <div>
+      <h3>La commune</h3>
+      <a href="/mairie/">La mairie</a>
+      <a href="/conseil/">Conseil municipal</a>
+      <a href="/villages/">Villages et zones</a>
+      <a href="/projets/">Projets</a>
+    </div>
+    <div>
+      <h3>Services</h3>
+      <a href="/services/">Services et démarches</a>
+      <a href="/transparence/documents/">Documents publics</a>
+      <a href="/transparence/marches/">Marchés publics</a>
+      <a href="/participer/">Participer</a>
+      <a href="/contact/">Contact et horaires</a>
+    </div>
+    <div>
+      <h3>Horaires d’ouverture</h3>
+      <div class="footer-hours">
+        {settings.hours.map((entry) => (<p><span>{entry.day}</span><span>{entry.value}</span></p>))}
+      </div>
+    </div>
   </div>
   <div class="container footer-bottom">
-    <span>{settings.denomination}</span>
+    <span>© {settings.denomination}</span>
     <span>Informations publiées sous la responsabilité de la commune.</span>
   </div>
 </footer>

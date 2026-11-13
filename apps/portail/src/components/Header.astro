@@ -16,12 +16,6 @@ const links = [
 const isCurrent = (href: string) => href === '/' ? currentPath === href : currentPath.startsWith(href);
 ---
 <header class="site-header">
-  <div class="utility-bar">
-    <div class="container utility-inner">
-      <span>Portail officiel de la commune</span>
-      <a href="/contact/">Contact et horaires <span aria-hidden="true">↗</span></a>
-    </div>
-  </div>
   <div class="container header-inner">
     <a class="brand" href="/" aria-label="Commune de Kafountine, accueil">
       <img class="brand-logo" src="/images/logo-commune-kafountine.png" alt="Commune de Kafountine — portail citoyen officiel" width="1672" height="941" />
@@ -30,10 +24,15 @@ const isCurrent = (href: string) => href === '/' ? currentPath === href : curren
       {links.map((link) => (
         <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}</a>
       ))}
-      <a class="nav-action" href="/participer/">Participer</a>
+      <a class="nav-search" href="/recherche/" aria-label="Rechercher sur le portail">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.5-4.5"/></svg>
+        <span class="nav-search-label">Rechercher</span>
+      </a>
+      <a class="nav-action" href="/services/">Faire une démarche</a>
     </nav>
     <button class="menu-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="primary-navigation">Menu</button>
   </div>
+  <div class="boat-stripes" aria-hidden="true"><i></i><i></i><i></i></div>
 </header>
 <script>
   const header = document.querySelector('.site-header');

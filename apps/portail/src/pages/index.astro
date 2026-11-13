@@ -1,94 +1,185 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getPortalActualites, getPortalSettings, getPortalZones, stripHtml } from '../lib/content';
+import '../styles/home.css';
+import {
+  getPortalActualites, getPortalCommissions, getPortalCouncilMembers, getPortalEvents,
+  getPortalProjects, getPortalServices, getPortalZones, stripHtml,
+} from '../lib/content';
 
-const settings = await getPortalSettings();
-const zones = await getPortalZones();
-const actualites = await getPortalActualites();
+const [zones, services, members, commissions, actualites, events, projects] = await Promise.all([
+  getPortalZones(), getPortalServices(), getPortalCouncilMembers(), getPortalCommissions(),
+  getPortalActualites(), getPortalEvents(), getPortalProjects(),
+]);
+
+const slides = [
+  { photo: 'hero-01.jpg', mobile: 'mobile-10.jpg', alt: 'Réunion de travail dans une salle de la mairie de Kafountine', kicker: 'Portail officiel', title: 'Bienvenue sur le portail de la commune de Kafountine', text: 'Démarches, conseil municipal, villages et documents publics : retrouvez l’essentiel de la mairie au même endroit.', href: '/mairie/', label: 'Découvrir la mairie' },
+  { photo: 'hero-02.jpg', mobile: 'mobile-11.jpg', alt: 'Participants autour d’une grande table de réunion à la mairie', kicker: 'Démarches', title: 'Les démarches, les pièces à fournir et les bureaux', text: 'Trouvez le service à contacter et les informations utiles avant de vous déplacer.', href: '/services/', label: 'Voir les services et démarches' },
+  { photo: 'hero-04.jpg', alt: 'Élus et participants attentifs pendant une réunion', kicker: 'Conseil municipal', title: 'Les élus et les commissions de la commune', text: `${members.length || ''} élus et ${commissions.length || ''} commissions : découvrez qui décide, et sur quels sujets.`, href: '/conseil/', label: 'Rencontrer les élus' },
+  { photo: 'hero-06.jpg', alt: 'Habitants et agents réunis autour d’une présentation projetée', kicker: 'Participer', title: 'Participez à la vie de la commune', text: 'Réunions, consultations, idées pour votre village : la mairie vous écoute.', href: '/participer/', label: 'Voir comment participer' },
+];
+
+const tiles = [
+  { href: '/services/', icon: 'M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6', label: 'Services et démarches', text: services.length ? `${services.length} services à joindre` : 'Pièces à fournir et bureaux' },
+  { href: '/conseil/', icon: 'M3 10l9-6 9 6M5 10v9M9 10v9M15 10v9M19 10v9M3 21h18', label: 'Conseil municipal', text: 'Élus, commissions, sessions' },
+  { href: '/villages/', icon: 'M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11zM12 7.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z', label: 'Mon village', text: zones.length ? `${zones.length} villages et zones` : 'Les villages de la commune' },
+  { href: '/transparence/documents/', icon: 'M5 4h14v16H5zM8 9h8M8 13h8M8 17h5', label: 'Documents publics', text: 'Délibérations, budgets' },
+  { href: '/transparence/marches/', icon: 'M4 8h16l-1.5 11h-13zM8 8a4 4 0 018 0', label: 'Marchés publics', text: 'Avis et résultats' },
+  { href: '/agenda/', icon: 'M4 7a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2zM4 10h16M9 3v4M15 3v4', label: 'Agenda et alertes', text: 'Événements de la commune' },
+  { href: '/projets/', icon: 'M4 20V10l8-6 8 6v10zM9 20v-6h6v6', label: 'Projets', text: 'Les chantiers en cours' },
+  { href: '/contact/', icon: 'M4 5h16v11H9l-5 4z', label: 'Contact et horaires', text: 'Adresse, téléphone, horaires' },
+];
+
+const formatDate = (value?: string) => value ? new Date(value).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+const day = (value: string) => new Date(value).toLocaleDateString('fr-FR', { day: 'numeric' });
+const month = (value: string) => new Date(value).toLocaleDateString('fr-FR', { month: 'short' });
+const stats = [
+  { value: zones.length, label: 'villages et zones' },
+  { value: '908 km²', label: 'de superficie environ' },
+  { value: members.length, label: 'élus au conseil' },
+  { value: commissions.length, label: 'commissions' },
+].filter((item) => item.value !== 0);
 ---
-<Base title="Votre commune, vos services">
-  <section class="hero-section">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">PORTAIL CITOYEN OFFICIEL</p>
-        <h1>Votre commune,<br /><em>vos services.</em></h1>
-        <p class="hero-intro">{settings.presentation}</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="/services/">Accéder aux démarches <span aria-hidden="true">→</span></a>
-          <a class="button button-secondary" href="/conseil/">Découvrir la commune</a>
-        </div>
+<Base title="Commune de Kafountine, portail officiel" description="Le site officiel de la commune de Kafountine : démarches, conseil municipal, villages, projets et documents publics.">
+  <section class="hero" aria-roledescription="carrousel" aria-label="À la une" data-hero>
+    <div class="hero-frame">
+      {slides.map((slide, index) => (
+        <article class:list={['hero-slide', { 'is-active': index === 0 }]} aria-label={`${index + 1} sur ${slides.length}`}>
+          <picture>
+            {slide.mobile && <source media="(max-width: 700px)" srcset={`/images/hero/${slide.mobile}`} />}
+            <img src={`/images/hero/${slide.photo}`} alt={slide.alt} width="1077" height="479" loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} decoding="async" />
+          </picture>
+          <div class="hero-card">
+            <p class="hero-kicker">{slide.kicker}</p>
+            {index === 0 ? <h1>{slide.title}</h1> : <h2>{slide.title}</h2>}
+            <p>{slide.text}</p>
+            <a href={slide.href}>{slide.label} <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+        </article>
+      ))}
+      <button class="hero-pause" type="button" data-hero-pause>Mettre en pause</button>
+      <div class="hero-dots" role="group" aria-label="Choisir une diapositive">
+        {slides.map((slide, index) => <button type="button" aria-label={`Diapositive ${index + 1}`} aria-current={index === 0 ? 'true' : 'false'}></button>)}
       </div>
-      <aside class="welcome-card" aria-label="Repères de la commune">
-        <p class="card-label">Kafountine en bref</p>
-        <dl>
-          <div><dt>Région</dt><dd>{settings.region}</dd></div>
-          <div><dt>Département</dt><dd>{settings.departement}</dd></div>
-          <div><dt>Arrondissement</dt><dd>{settings.arrondissement}</dd></div>
-          <div><dt>Villages et zones</dt><dd>{zones.length || '—'}</dd></div>
-        </dl>
-        <a href="/mairie/">Voir les informations de la mairie <span aria-hidden="true">↗</span></a>
-        <a href="/villages/">Voir les villages et zones <span aria-hidden="true">↗</span></a>
-      </aside>
     </div>
   </section>
 
-  {actualites.length > 0 && (
-    <section class="section news-section" aria-labelledby="actualites-title">
-      <div class="container">
-        <div class="section-heading">
-          <div><p class="eyebrow">LA VIE DE LA COMMUNE</p><h2 id="actualites-title">Actualités de Kafountine</h2></div>
-          <a class="text-link" href="/actualites/">Toutes les actualités <span aria-hidden="true">↗</span></a>
-        </div>
-        <div class="news-grid">
+  <section class="quick" aria-labelledby="quick-title">
+    <div class="container">
+      <h2 id="quick-title">Accès direct</h2>
+      <p class="quick-intro">Ce que les habitants cherchent le plus, à un clic.</p>
+      <ul class="tiles">
+        {tiles.map((tile) => (
+          <li>
+            <a href={tile.href}>
+              <span class="tile-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={tile.icon}/></svg></span>
+              <strong>{tile.label}</strong>
+              <span class="tile-text">{tile.text}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="news-title">
+    <div class="container">
+      <div class="block-head"><h2 id="news-title">Actualités</h2><a class="more" href="/actualites/">Toutes les actualités</a></div>
+      {actualites.length > 0 ? (
+        <div class="news-row">
           {actualites.slice(0, 3).map((actualite, index) => {
             const image = actualite.acf?.image_principale;
             const imageUrl = typeof image === 'object' && image ? image.url : typeof image === 'string' ? image : undefined;
             const summary = actualite.acf?.resume || stripHtml(actualite.excerpt?.rendered || actualite.content?.rendered || '');
             return (
-              <a class:list={['news-card', { 'news-card-featured': index === 0 }]} href={`/actualites/${actualite.slug}/`}>
-                {imageUrl && <img class="news-card-image" src={imageUrl} alt={typeof image === 'object' && image?.alt ? image.alt : ''} loading={index === 0 ? 'eager' : 'lazy'} />}
-                <div class="news-card-body">
-                  <p class="news-card-meta">{actualite.acf?.date_actualite || new Date(actualite.date).toLocaleDateString('fr-FR')}</p>
+              <a class="news-item" href={`/actualites/${actualite.slug}/`}>
+                {imageUrl ? <img src={imageUrl} alt="" loading="lazy" /> : <span class="news-thumb" aria-hidden="true"></span>}
+                <span class="news-body">
+                  <time>{actualite.acf?.date_actualite || formatDate(actualite.date)}</time>
                   <h3 set:html={actualite.title.rendered}></h3>
                   {summary && <p>{summary}</p>}
-                  <span class="text-link">Lire l’actualité <span aria-hidden="true">↗</span></span>
-                </div>
+                </span>
               </a>
             );
           })}
+        </div>
+      ) : (
+        <div class="empty"><strong>Aucune actualité pour l’instant.</strong><p>La mairie publiera ici ses annonces : travaux, cérémonies, campagnes de santé.</p></div>
+      )}
+    </div>
+  </section>
+
+  <section class="block block-sand" aria-label="Agenda et Kafountine en chiffres">
+    <div class="container two">
+      <div>
+        <div class="block-head"><h2>Agenda de la mairie</h2><a class="more" href="/agenda/">Tout l’agenda</a></div>
+        {events.length > 0 ? (
+          <ul class="agenda">
+            {events.slice(0, 3).map((event) => (
+              <li>
+                <time class="date" datetime={event.date}>{day(event.date)}<small>{month(event.date)}</small></time>
+                <a href="/agenda/"><strong set:html={event.title.rendered}></strong></a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="empty"><strong>Aucun événement annoncé pour le moment.</strong><p>Les sessions du conseil, les réunions et les campagnes apparaîtront ici.</p></div>
+        )}
+      </div>
+      <div>
+        <div class="block-head"><h2>Kafountine en chiffres</h2></div>
+        <div class="stats">
+          {stats.map((item) => <div class="stat"><strong>{item.value}</strong><span>{item.label}</span></div>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {projects.length > 0 && (
+    <section class="block" aria-labelledby="projects-title">
+      <div class="container">
+        <div class="block-head"><h2 id="projects-title">Les projets de la commune</h2><a class="more" href="/projets/">Tous les projets</a></div>
+        <div class="project-row">
+          {projects.slice(0, 3).map((project) => (
+            <a class="project-tile" href="/projets/"><strong set:html={project.title.rendered}></strong></a>
+          ))}
         </div>
       </div>
     </section>
   )}
 
-  <section class="section section-quick-actions" aria-labelledby="actions-title">
-    <div class="container">
-      <div class="section-heading">
-        <div><p class="eyebrow">EN UN CLIC</p><h2 id="actions-title">Les démarches et informations les plus utiles</h2></div>
-        <a class="text-link" href="/recherche/">Rechercher sur le portail <span aria-hidden="true">↗</span></a>
+  <section class="voice">
+    <div class="container two">
+      <div>
+        <h2>Votre avis améliore les services de la commune</h2>
+        <p>Un problème, une idée, un sujet à signaler dans votre village ? Écrivez à la mairie.</p>
       </div>
-      <div class="action-grid">
-        {settings.quickActions.map((action) => (
-          <a class="action-card" href={action.href}>
-            <span class="action-number">{action.icon}</span>
-            <span class="action-content"><strong>{action.label}</strong><span>{action.description}</span></span>
-            <span class="action-arrow" aria-hidden="true">↗</span>
-          </a>
-        ))}
+      <div class="voice-actions">
+        <a class="btn-gold" href="/participer/">Participer</a>
+        <a class="btn-line" href="/contact/">Contacter la mairie</a>
       </div>
     </div>
   </section>
 
-  <section class="section section-split" aria-labelledby="participation-title">
-    <div class="container split-grid">
-      <div>
-        <p class="eyebrow">UNE COMMUNE QUI INFORME</p>
-        <h2 id="participation-title">Suivre les décisions, les projets et la vie locale.</h2>
-      </div>
-      <div class="split-copy">
-        <p>Le portail rassemble progressivement les services municipaux, les informations du conseil communal, les projets en cours et les documents publics validés.</p>
-        <a class="button button-dark" href="/projets/">Voir les projets de la commune <span aria-hidden="true">→</span></a>
-      </div>
-    </div>
-  </section>
+  <script>
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    if (hero) {
+      const slides = [...hero.querySelectorAll<HTMLElement>('.hero-slide')];
+      const dots = [...hero.querySelectorAll<HTMLButtonElement>('.hero-dots button')];
+      const pause = hero.querySelector<HTMLButtonElement>('[data-hero-pause]')!;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let index = 0;
+      let timer: number | undefined;
+      const show = (next: number) => {
+        index = (next + slides.length) % slides.length;
+        slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
+        dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === index)));
+      };
+      const start = () => { if (reduced) return; timer = window.setInterval(() => show(index + 1), 6500); pause.textContent = 'Mettre en pause'; };
+      const stop = () => { window.clearInterval(timer); timer = undefined; pause.textContent = 'Reprendre le défilement'; };
+      dots.forEach((dot, i) => dot.addEventListener('click', () => show(i)));
+      pause.addEventListener('click', () => (timer ? stop() : start()));
+      hero.addEventListener('focusin', () => { if (timer) stop(); });
+      if (reduced) pause.hidden = true; else start();
+    }
+  </script>
 </Base>
