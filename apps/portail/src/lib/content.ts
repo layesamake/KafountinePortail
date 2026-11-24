@@ -76,6 +76,48 @@ export interface PortalProject {
   content: { rendered: string; protected: boolean };
   excerpt: { rendered: string; protected: boolean };
   ck_zone?: number[];
+  ck_theme?: number[];
+  acf?: {
+    statut_projet?: 'À faire' | 'En cours' | 'Terminé' | string;
+    priorite_urgente?: boolean;
+    date_demarrage?: string;
+    date_fin?: string;
+    financement?: string;
+    budget_total?: number | string | null;
+    maitre_ouvrage?: string;
+    etapes_avancement?: string;
+    document_reference?: { url?: string; title?: string; filename?: string } | string | false | null;
+  } | unknown[];
+}
+
+export interface PortalProjectDetails {
+  statut?: string;
+  urgent: boolean;
+  demarrage?: string;
+  fin?: string;
+  financement?: string;
+  budget?: string;
+  maitreOuvrage?: string;
+  etapes?: string;
+  document?: { url: string; label: string };
+}
+
+export function projectDetails(project: PortalProject): PortalProjectDetails {
+  const acf = Array.isArray(project.acf) ? {} : project.acf ?? {};
+  const budget = acf.budget_total === '' || acf.budget_total == null ? undefined : Number(acf.budget_total);
+  const doc = acf.document_reference;
+  const url = typeof doc === 'string' ? doc : doc ? doc.url : undefined;
+  return {
+    statut: acf.statut_projet || undefined,
+    urgent: Boolean(acf.priorite_urgente),
+    demarrage: acf.date_demarrage || undefined,
+    fin: acf.date_fin || undefined,
+    financement: acf.financement || undefined,
+    budget: budget !== undefined && Number.isFinite(budget) ? `${new Intl.NumberFormat('fr-FR').format(budget)} FCFA` : undefined,
+    maitreOuvrage: acf.maitre_ouvrage || undefined,
+    etapes: acf.etapes_avancement || undefined,
+    document: url ? { url, label: (typeof doc === 'object' && doc && (doc.title || doc.filename)) || 'Document de référence' } : undefined,
+  };
 }
 
 export interface PortalMarket {

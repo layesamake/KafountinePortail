@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getPortalProjects, getPortalZones } from '../../lib/content';
+import { getPortalProjects, getPortalZones, projectDetails } from '../../lib/content';
 
 const [projects, zones] = await Promise.all([
   getPortalProjects(),
@@ -34,6 +34,9 @@ const populatedZones = zones.filter((zone) => zone.count > 0);
           {projects.map((project, index) => (
             <article class="project-card" data-zones={(project.ck_zone ?? []).join(',')}>
               <span class="project-number">{String(index + 1).padStart(2, '0')}</span>
+              {(projectDetails(project).statut || projectDetails(project).urgent) && (
+                <p class="card-label">{[projectDetails(project).urgent ? 'Urgent' : '', projectDetails(project).statut].filter(Boolean).join(' · ')}</p>
+              )}
               <h3 set:html={project.title.rendered}></h3>
               <div class="cms-content" set:html={project.excerpt.rendered || project.content.rendered}></div>
               <a class="text-link" href={`/projets/${project.slug}/`}>Voir le projet <span aria-hidden="true">↗</span></a>

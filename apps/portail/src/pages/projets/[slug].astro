@@ -1,16 +1,30 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getPortalProjects } from '../../lib/content';
+import { getPortalProjects, getPortalZones, projectDetails } from '../../lib/content';
 
 export async function getStaticPaths() {
-  const projects = await getPortalProjects();
+  const [projects, zones] = await Promise.all([getPortalProjects(), getPortalZones()]);
   return projects.map((project) => ({
     params: { slug: project.slug },
-    props: { project },
+    props: { project, zones: zones.filter((zone) => (project.ck_zone ?? []).includes(zone.id)).map((zone) => zone.name) },
   }));
 }
 
-const { project } = Astro.props;
+const { project, zones } = Astro.props;
+const d = projectDetails(project);
+const fmt = (value?: string) => {
+  if (!value) return '';
+  const [y, m, day] = value.slice(0, 10).split('-').map(Number);
+  return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(y, m - 1, day));
+};
+const facts: [string, string][] = [
+  ['Statut', [d.urgent ? 'Urgent' : '', d.statut ?? ''].filter(Boolean).join(' · ')],
+  ['Démarrage', fmt(d.demarrage)],
+  ['Fin prévue / réalisée', fmt(d.fin)],
+  ['Budget total', d.budget ?? ''],
+  ['Maître d’ouvrage', d.maitreOuvrage ?? ''],
+  ['Villages et zones', zones.join(', ')],
+].filter(([, value]) => value) as [string, string][];
 ---
 <Base title={project.title.rendered} description={project.excerpt.rendered.replace(/<[^>]*>/g, '').trim()}>
   <section class="page-hero">
@@ -22,7 +36,15 @@ const { project } = Astro.props;
   </section>
   <section class="section">
     <div class="container narrow">
+      {facts.length > 0 && (
+        <article class="content-card">
+          <dl>{facts.map(([label, value]) => <><dt><strong>{label}</strong></dt><dd>{value}</dd></>)}</dl>
+        </article>
+      )}
       <article class="content-card cms-content" set:html={project.content.rendered}></article>
+      {d.financement && <article class="content-card"><h2>Financement</h2><p style="white-space: pre-line">{d.financement}</p></article>}
+      {d.etapes && <article class="content-card"><h2>Étapes et avancement</h2><p style="white-space: pre-line">{d.etapes}</p></article>}
+      {d.document && <p><a class="button" href={d.document.url} rel="noopener">{d.document.label}</a></p>}
       <a class="button button-secondary" href="/projets/">← Retour aux projets</a>
     </div>
   </section>

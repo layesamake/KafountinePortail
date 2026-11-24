@@ -1,0 +1,124 @@
+[
+  {
+    "key": "group_ck_projet_v2",
+    "title": "Projet municipal",
+    "fields": [
+      {
+        "key": "field_ck_projet_statut",
+        "label": "Statut du projet",
+        "name": "statut_projet",
+        "type": "radio",
+        "required": 1,
+        "choices": {
+          "À faire": "À faire",
+          "En cours": "En cours",
+          "Terminé": "Terminé"
+        },
+        "layout": "horizontal",
+        "default_value": "À faire",
+        "return_format": "value"
+      },
+      {
+        "key": "field_ck_projet_urgent",
+        "label": "Priorité",
+        "name": "priorite_urgente",
+        "type": "true_false",
+        "message": "Projet urgent",
+        "ui": 1,
+        "instructions": "Distinct du statut."
+      },
+      {
+        "key": "field_ck_projet_debut",
+        "label": "Date de démarrage",
+        "name": "date_demarrage",
+        "type": "date_picker",
+        "display_format": "d/m/Y",
+        "return_format": "Y-m-d",
+        "first_day": 1,
+        "wrapper": {
+          "width": "50"
+        }
+      },
+      {
+        "key": "field_ck_projet_fin",
+        "label": "Date de fin prévue / réalisée",
+        "name": "date_fin",
+        "type": "date_picker",
+        "display_format": "d/m/Y",
+        "return_format": "Y-m-d",
+        "first_day": 1,
+        "wrapper": {
+          "width": "50"
+        }
+      },
+      {
+        "key": "field_ck_projet_fin_txt",
+        "label": "Financement du projet",
+        "name": "financement",
+        "type": "textarea",
+        "required": 1,
+        "rows": 4,
+        "instructions": "Source(s) du financement, partenaires et montants publiables.",
+        "new_lines": ""
+      },
+      {
+        "key": "field_ck_projet_budget",
+        "label": "Budget total communiqué (FCFA)",
+        "name": "budget_total",
+        "type": "number",
+        "min": 0,
+        "step": 1,
+        "append": "FCFA",
+        "instructions": "Entier. Laisser vide si le montant est à confirmer.",
+        "wrapper": {
+          "width": "50"
+        }
+      },
+      {
+        "key": "field_ck_projet_moa",
+        "label": "Maître d’ouvrage / service pilote",
+        "name": "maitre_ouvrage",
+        "type": "text",
+        "instructions": "Structure responsable.",
+        "wrapper": {
+          "width": "50"
+        }
+      },
+      {
+        "key": "field_ck_projet_etapes",
+        "label": "Étapes, état d’avancement et résultats",
+        "name": "etapes_avancement",
+        "type": "textarea",
+        "required": 1,
+        "rows": 6,
+        "instructions": "Principales étapes datées : prévues, engagées et achevées.",
+        "new_lines": ""
+      },
+      {
+        "key": "field_ck_projet_doc",
+        "label": "Document, décision ou image de référence",
+        "name": "document_reference",
+        "type": "file",
+        "return_format": "array",
+        "mime_types": "pdf,doc,docx,odt,jpg,jpeg,png,webp"
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "ck_projet"
+        }
+      ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "active": true,
+    "show_in_rest": 1,
+    "description": "Titre WordPress = nom officiel ; contenu WordPress = objectifs et description ; villages = taxonomie ck_zone ; thématiques = taxonomie ck_theme."
+  }
+]
