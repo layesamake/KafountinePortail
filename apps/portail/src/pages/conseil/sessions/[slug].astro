@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { getPortalSessions } from '../../../lib/content';
+import { getPortalSessions, sessionDate, sessionDocuments } from '../../../lib/content';
 
 export async function getStaticPaths() {
   const sessions = await getPortalSessions();
@@ -11,20 +11,45 @@ export async function getStaticPaths() {
 }
 
 const { session } = Astro.props;
-const [year, month, day] = session.date.slice(0, 10).split('-').map(Number);
+const [year, month, day] = sessionDate(session).split('-').map(Number);
 const date = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(new Date(year, month - 1, day));
+const acf = session.acf ?? {};
+const docs = sessionDocuments(session);
+const groups = ['Délibération', 'Compte rendu', 'Convocation', 'Autre']
+  .map((categorie) => ({ categorie, items: docs.filter((doc) => (doc.categorie || 'Autre') === categorie) }))
+  .filter((group) => group.items.length > 0);
+const agenda = (acf.ordre_du_jour || '').split('\n').map((line) => line.trim()).filter(Boolean);
 ---
 <Base title={session.title.rendered} description={`Session du Conseil municipal : ${session.title.rendered}.`}>
   <section class="page-hero">
     <div class="container narrow">
       <p class="eyebrow">SESSION DU CONSEIL MUNICIPAL</p>
       <h1 set:html={session.title.rendered}></h1>
-      <p>{date}</p>
+      <p>
+        {[acf.type_session, date, acf.heure_session, acf.lieu_session].filter(Boolean).join(' · ')}
+      </p>
+      {acf.statut_session && <p class="card-label">{acf.statut_session}</p>}
     </div>
   </section>
   <section class="section">
     <div class="container narrow">
-      <article class="content-card cms-content" set:html={session.content.rendered}></article>
+      {session.content.rendered && <article class="content-card cms-content" set:html={session.content.rendered}></article>}
+      {agenda.length > 0 && (
+        <article class="content-card">
+          <h2>Ordre du jour</h2>
+          <ol>{agenda.map((point) => <li>{point}</li>)}</ol>
+        </article>
+      )}
+      {groups.map((group) => (
+        <article class="content-card">
+          <h2>{group.categorie === 'Délibération' ? 'Délibérations' : group.categorie === 'Compte rendu' ? 'Compte rendu' : group.categorie === 'Convocation' ? 'Convocations' : 'Autres documents'}</h2>
+          <ul>
+            {group.items.map((doc) => (
+              <li><a href={doc.url} rel="noopener">{doc.numero ? `${doc.numero} — ` : ''}{doc.nom}</a></li>
+            ))}
+          </ul>
+        </article>
+      ))}
       <a class="button button-secondary" href="/conseil/">← Retour au conseil municipal</a>
     </div>
   </section>

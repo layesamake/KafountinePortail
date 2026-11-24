@@ -32,6 +32,13 @@ export interface PortalCommission {
   excerpt: { rendered: string; protected: boolean };
 }
 
+export interface PortalSessionDocument {
+  categorie?: 'Délibération' | 'Compte rendu' | 'Convocation' | 'Autre' | string;
+  nom?: string;
+  numero?: string;
+  fichier?: { url?: string } | string | false | null;
+}
+
 export interface PortalSession {
   id: number;
   date: string;
@@ -39,6 +46,27 @@ export interface PortalSession {
   title: { rendered: string };
   content: { rendered: string; protected: boolean };
   excerpt: { rendered: string; protected: boolean };
+  acf?: {
+    type_session?: string;
+    date_session?: string;
+    heure_session?: string;
+    lieu_session?: string;
+    ordre_du_jour?: string;
+    statut_session?: string;
+    documents_session?: PortalSessionDocument[] | false;
+  };
+}
+
+export function sessionDate(session: PortalSession): string {
+  const raw = session.acf?.date_session;
+  return raw && /^\d{8}$/.test(raw) ? `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}` : raw || session.date.slice(0, 10);
+}
+
+export function sessionDocuments(session: PortalSession) {
+  const docs = Array.isArray(session.acf?.documents_session) ? session.acf.documents_session : [];
+  return docs
+    .map((doc) => ({ ...doc, url: typeof doc.fichier === 'string' ? doc.fichier : doc.fichier ? doc.fichier.url : undefined }))
+    .filter((doc) => doc.url);
 }
 
 export interface PortalProject {

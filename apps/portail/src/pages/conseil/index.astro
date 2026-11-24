@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getPortalCommissions, getPortalCouncilMembers, getPortalSessions } from '../../lib/content';
+import { getPortalCommissions, getPortalCouncilMembers, getPortalSessions, sessionDate } from '../../lib/content';
 
 const [members, commissions, sessions] = await Promise.all([
   getPortalCouncilMembers(),
@@ -81,7 +81,7 @@ const formatDate = (value: string) => {
           {sessions.map((session, index) => (
             <a class="document-card" href={`/conseil/sessions/${session.slug}/`}>
               <span class="document-number">{String(index + 1).padStart(2, '0')}</span>
-              <p class="card-label">{formatDate(session.date)}</p>
+              <p class="card-label">{[session.acf?.type_session, formatDate(sessionDate(session)), session.acf?.heure_session, session.acf?.statut_session].filter(Boolean).join(' · ')}</p>
               <h3 set:html={session.title.rendered}></h3>
               <div class="cms-content" set:html={session.excerpt.rendered || session.content.rendered}></div>
               <span class="text-link">Voir la session →</span>

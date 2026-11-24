@@ -1,0 +1,160 @@
+[
+  {
+    "key": "group_ck_session_v2",
+    "title": "Session du conseil municipal",
+    "fields": [
+      {
+        "key": "field_ck_session_type",
+        "label": "Type de session",
+        "name": "type_session",
+        "type": "radio",
+        "required": 1,
+        "choices": {
+          "Ordinaire": "Ordinaire",
+          "Extraordinaire": "Extraordinaire",
+          "Autre cas applicable": "Autre cas applicable"
+        },
+        "layout": "horizontal",
+        "return_format": "value"
+      },
+      {
+        "key": "field_ck_session_date",
+        "label": "Date de session",
+        "name": "date_session",
+        "type": "date_picker",
+        "required": 1,
+        "display_format": "d/m/Y",
+        "return_format": "Y-m-d",
+        "first_day": 1
+      },
+      {
+        "key": "field_ck_session_heure",
+        "label": "Heure",
+        "name": "heure_session",
+        "type": "time_picker",
+        "display_format": "H:i",
+        "return_format": "H:i"
+      },
+      {
+        "key": "field_ck_session_lieu",
+        "label": "Lieu",
+        "name": "lieu_session",
+        "type": "text",
+        "placeholder": "Salle du conseil, mairie"
+      },
+      {
+        "key": "field_ck_session_odj",
+        "label": "Ordre du jour",
+        "name": "ordre_du_jour",
+        "type": "textarea",
+        "rows": 8,
+        "instructions": "Un point par ligne.",
+        "new_lines": ""
+      },
+      {
+        "key": "field_ck_session_statut",
+        "label": "Statut de la session",
+        "name": "statut_session",
+        "type": "radio",
+        "required": 1,
+        "choices": {
+          "En préparation": "En préparation",
+          "Convoquée": "Convoquée",
+          "En cours": "En cours",
+          "Clôturée": "Clôturée",
+          "Annulée": "Annulée"
+        },
+        "layout": "horizontal",
+        "default_value": "En préparation",
+        "return_format": "value"
+      },
+      {
+        "key": "field_ck_session_docs",
+        "label": "Documents liés à la session",
+        "name": "documents_session",
+        "type": "repeater",
+        "layout": "block",
+        "button_label": "Ajouter un document",
+        "sub_fields": [
+          {
+            "key": "field_ck_session_doc_cat",
+            "label": "Catégorie",
+            "name": "categorie",
+            "type": "select",
+            "required": 1,
+            "choices": {
+              "Délibération": "Délibération",
+              "Compte rendu": "Compte rendu",
+              "Convocation": "Convocation",
+              "Autre": "Autre"
+            },
+            "return_format": "value",
+            "wrapper": {
+              "width": "25"
+            }
+          },
+          {
+            "key": "field_ck_session_doc_nom",
+            "label": "Nom du document",
+            "name": "nom",
+            "type": "text",
+            "required": 1,
+            "wrapper": {
+              "width": "35"
+            }
+          },
+          {
+            "key": "field_ck_session_doc_num",
+            "label": "Numéro de délibération",
+            "name": "numero",
+            "type": "text",
+            "wrapper": {
+              "width": "20"
+            },
+            "conditional_logic": [
+              [
+                {
+                  "field": "field_ck_session_doc_cat",
+                  "operator": "==",
+                  "value": "Délibération"
+                }
+              ]
+            ]
+          },
+          {
+            "key": "field_ck_session_doc_file",
+            "label": "Fichier",
+            "name": "fichier",
+            "type": "file",
+            "required": 1,
+            "return_format": "array",
+            "mime_types": "pdf,doc,docx,odt,xls,xlsx",
+            "wrapper": {
+              "width": "20"
+            }
+          }
+        ]
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "ck_session"
+        }
+      ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+      "excerpt"
+    ],
+    "active": true,
+    "show_in_rest": 1,
+    "description": "Remplace l'ancien groupe « Sessions du conseil »."
+  }
+]
